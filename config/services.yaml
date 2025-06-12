@@ -32,3 +32,8 @@ services:
         class: App\Admin\ClienteAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Cliente, controller: ~, manager_type: orm, group: admin, label: Cliente }
+
+    admin.proveedor:
+        class: App\Admin\ProveedorAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Proveedor, controller: ~, manager_type: orm, group: admin, label: Proveedor }

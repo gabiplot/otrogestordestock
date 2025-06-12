@@ -10,9 +10,8 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-final class ClienteAdmin extends AbstractAdmin
+final class ProveedorAdmin extends AbstractAdmin
 {
-
     //remove batch delete
     public function configureBatchActions($actions): array
 	{
@@ -34,7 +33,7 @@ final class ClienteAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            //->add('id')
+            ->add('id')
             ->add('nombre')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [

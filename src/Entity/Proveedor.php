@@ -2,18 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\ClienteRepository;
+use App\Repository\ProveedorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClienteRepository::class)]
-class Cliente
+#[ORM\Entity(repositoryClass: ProveedorRepository::class)]
+class Proveedor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $nombre = null;
 
     public function __toString(): string
@@ -31,7 +31,7 @@ class Cliente
         return $this->nombre;
     }
 
-    public function setNombre(?string $nombre): static
+    public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
 
