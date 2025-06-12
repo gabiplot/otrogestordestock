@@ -1,0 +1,69 @@
+Producto
+
+    ID
+
+    Nombre
+
+    Descripción
+
+    Código de barras / SKU
+
+    Categoría
+
+    Precio de compra
+
+    Precio de venta
+
+    Unidad de medida (unidad, kg, litro, etc.)
+
+    Stock mínimo (para alertas)
+
+Stock
+
+    ID
+
+    Producto
+
+    Cantidad
+
+    Ubicación / Almacén
+
+    Fecha de último movimiento
+
+Movimiento de Stock
+
+    ID
+
+    Producto
+
+    Tipo (Entrada, Salida, Ajuste)
+
+    Cantidad
+
+    Fecha
+
+    Usuario responsable
+
+    Observaciones
+
+Proveedor
+
+    ID
+
+    Nombre
+
+    Contacto
+
+    Teléfono / Email
+
+    Productos que provee
+
+Almacén
+
+    ID
+
+    Nombre
+
+    Dirección
+
+    Responsable

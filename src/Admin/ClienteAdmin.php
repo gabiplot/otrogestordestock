@@ -34,7 +34,7 @@ final class ClienteAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            //->add('id')
+            ->add('id')
             ->add('nombre')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
