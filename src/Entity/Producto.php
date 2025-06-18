@@ -29,6 +29,17 @@ class Producto
     #[ORM\Column]
     private ?int $stock_minimo = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $estado = null;
+
+    #[ORM\ManyToOne(inversedBy: 'productos')]
+    private ?Categoria $categoria = null;
+
+    public function __toString(): string
+    {
+        return strval($this->nombre);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +101,30 @@ class Producto
     public function setStockMinimo(int $stock_minimo): static
     {
         $this->stock_minimo = $stock_minimo;
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): static
+    {
+        $this->categoria = $categoria;
 
         return $this;
     }

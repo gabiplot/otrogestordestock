@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\LoteRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: LoteRepository::class)]
+class Lote
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $numero = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $fecha_produccion = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $fecha_vencimiento = null;
+
+    #[ORM\Column]
+    private ?int $cantidad_inicial = null;
+
+    #[ORM\Column]
+    private ?int $cantidad_actual = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $estado = null;
+
+    public function __toString(): string
+    {
+        return strval($this->numero);
+    }    
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }    
+
+    public function getNumero(): ?string
+    {
+        return $this->numero;
+    }
+
+    public function setNumero(string $numero): static
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    public function getFechaProduccion(): ?\DateTime
+    {
+        return $this->fecha_produccion;
+    }
+
+    public function setFechaProduccion(?\DateTime $fecha_produccion): static
+    {
+        $this->fecha_produccion = $fecha_produccion;
+
+        return $this;
+    }
+
+    public function getFechaVencimiento(): ?\DateTime
+    {
+        return $this->fecha_vencimiento;
+    }
+
+    public function setFechaVencimiento(?\DateTime $fecha_vencimiento): static
+    {
+        $this->fecha_vencimiento = $fecha_vencimiento;
+
+        return $this;
+    }
+
+    public function getCantidadInicial(): ?int
+    {
+        return $this->cantidad_inicial;
+    }
+
+    public function setCantidadInicial(int $cantidad_inicial): static
+    {
+        $this->cantidad_inicial = $cantidad_inicial;
+
+        return $this;
+    }
+
+    public function getCantidadActual(): ?int
+    {
+        return $this->cantidad_actual;
+    }
+
+    public function setCantidadActual(int $cantidad_actual): static
+    {
+        $this->cantidad_actual = $cantidad_actual;
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+}
