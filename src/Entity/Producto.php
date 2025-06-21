@@ -32,9 +32,6 @@ class Producto
     #[ORM\Column(length: 255)]
     private ?string $estado = null;
 
-    #[ORM\ManyToOne(inversedBy: 'productos')]
-    private ?Categoria $categoria = null;
-
     public function __toString(): string
     {
         return strval($this->nombre);
@@ -113,18 +110,6 @@ class Producto
     public function setEstado(string $estado): static
     {
         $this->estado = $estado;
-
-        return $this;
-    }
-
-    public function getCategoria(): ?Categoria
-    {
-        return $this->categoria;
-    }
-
-    public function setCategoria(?Categoria $categoria): static
-    {
-        $this->categoria = $categoria;
 
         return $this;
     }

@@ -34,7 +34,6 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('unidad_de_medida')
             ->add('stock_minimo')
             ->add('estado')
-            ->add('categoria')
         ;
     }
 
@@ -48,7 +47,6 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('unidad_de_medida')
             ->add('stock_minimo')
             ->add('estado')
-            ->add('categoria')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -73,7 +71,6 @@ final class ProductoAdmin extends AbstractAdmin
                 ],
             ])
             ->add('stock_minimo')
-            ->add('categoria')
             ->add('estado', ChoiceType::class, [
                 'choices'  => [
                     'ACTIVO' => 'A',
@@ -93,7 +90,6 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('unidad_de_medida')
             ->add('stock_minimo')
             ->add('estado')
-            ->add('categoria')
         ;
     }
 }

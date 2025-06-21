@@ -38,17 +38,7 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\Proveedor, controller: ~, manager_type: orm, group: admin, label: Proveedor }
 
-    admin.lote:
-        class: App\Admin\LoteAdmin
-        tags:
-            - { name: sonata.admin, model_class: App\Entity\Lote, controller: ~, manager_type: orm, group: admin, label: Lote }
-
     admin.producto:
         class: App\Admin\ProductoAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Producto, controller: ~, manager_type: orm, group: admin, label: Producto }
-
-    admin.categoria:
-        class: App\Admin\CategoriaAdmin
-        tags:
-            - { name: sonata.admin, model_class: App\Entity\Categoria, controller: ~, manager_type: orm, group: admin, label: Categoria }
