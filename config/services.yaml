@@ -42,3 +42,13 @@ services:
         class: App\Admin\ProductoAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Producto, controller: ~, manager_type: orm, group: admin, label: Producto }
+
+    admin.venta:
+        class: App\Admin\VentaAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Venta, controller: ~, manager_type: orm, group: admin, label: Venta }
+
+    admin.detalle_venta:
+        class: App\Admin\DetalleVentaAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\DetalleVenta, controller: ~, manager_type: orm, group: admin, label: DetalleVenta }

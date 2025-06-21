@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,20 @@ class Producto
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $precio_de_venta = null;
+
+    #[ORM\Column]
+    private ?int $stock_actual = null;
+
+    /**
+     * @var Collection<int, DetalleVenta>
+     */
+    #[ORM\OneToMany(targetEntity: DetalleVenta::class, mappedBy: 'producto')]
+    private Collection $detalleVentas;
+
+    public function __construct()
+    {
+        $this->detalleVentas = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -125,6 +141,48 @@ class Producto
     public function setPrecioDeVenta(string $precio_de_venta): static
     {
         $this->precio_de_venta = $precio_de_venta;
+
+        return $this;
+    }
+
+    public function getStockActual(): ?int
+    {
+        return $this->stock_actual;
+    }
+
+    public function setStockActual(int $stock_actual): static
+    {
+        $this->stock_actual = $stock_actual;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetalleVenta>
+     */
+    public function getDetalleVentas(): Collection
+    {
+        return $this->detalleVentas;
+    }
+
+    public function addDetalleVenta(DetalleVenta $detalleVenta): static
+    {
+        if (!$this->detalleVentas->contains($detalleVenta)) {
+            $this->detalleVentas->add($detalleVenta);
+            $detalleVenta->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetalleVenta(DetalleVenta $detalleVenta): static
+    {
+        if ($this->detalleVentas->removeElement($detalleVenta)) {
+            // set the owning side to null (unless already changed)
+            if ($detalleVenta->getProducto() === $this) {
+                $detalleVenta->setProducto(null);
+            }
+        }
 
         return $this;
     }

@@ -29,9 +29,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private UserPasswordHasherInterface $passwordHasher;
 
+    /**
+     * @var Collection<int, Venta>
+     */
+    #[ORM\OneToMany(targetEntity: Venta::class, mappedBy: 'usuario')]
+    private Collection $ventas;
+
     public function __construct()
     {
         $this->movimientoStocks = new ArrayCollection();
+        $this->ventas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,6 +110,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // Si almacenas datos temporales sensibles en el usuario, límpialos aquí
+    }
+
+    /**
+     * @return Collection<int, Venta>
+     */
+    public function getVentas(): Collection
+    {
+        return $this->ventas;
+    }
+
+    public function addVenta(Venta $venta): static
+    {
+        if (!$this->ventas->contains($venta)) {
+            $this->ventas->add($venta);
+            $venta->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVenta(Venta $venta): static
+    {
+        if ($this->ventas->removeElement($venta)) {
+            // set the owning side to null (unless already changed)
+            if ($venta->getUsuario() === $this) {
+                $venta->setUsuario(null);
+            }
+        }
+
+        return $this;
     }
 
 }
