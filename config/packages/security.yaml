@@ -21,7 +21,9 @@ security:
                ROLE_ADMIN_PROVEEDOR_ALL,
                ROLE_ADMIN_PRODUCTO_ALL,
                ROLE_ADMIN_LOTE_ALL,
-               ROLE_ADMIN_CATEGORIA_ALL
+               ROLE_ADMIN_CATEGORIA_ALL,
+               ROLE_ADMIN_STOCK_ALL,
+               ROLE_ADMIN_MOVIMIENTO_STOCK_ALL
                ]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 

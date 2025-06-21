@@ -52,3 +52,13 @@ services:
         class: App\Admin\CategoriaAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Categoria, controller: ~, manager_type: orm, group: admin, label: Categoria }
+
+    admin.stock:
+        class: App\Admin\StockAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Stock, controller: ~, manager_type: orm, group: admin, label: Stock }
+
+    admin.movimiento_stock:
+        class: App\Admin\MovimientoStockAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\MovimientoStock, controller: ~, manager_type: orm, group: admin, label: MovimientoStock }

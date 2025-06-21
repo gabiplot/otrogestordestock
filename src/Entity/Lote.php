@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LoteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,24 @@ class Lote
 
     #[ORM\Column(length: 255)]
     private ?string $estado = null;
+
+    /**
+     * @var Collection<int, Stock>
+     */
+    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'lote')]
+    private Collection $stocks;
+
+    /**
+     * @var Collection<int, MovimientoStock>
+     */
+    #[ORM\OneToMany(targetEntity: MovimientoStock::class, mappedBy: 'lote')]
+    private Collection $movimientoStocks;
+
+    public function __construct()
+    {
+        $this->stocks = new ArrayCollection();
+        $this->movimientoStocks = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -110,6 +130,66 @@ class Lote
     public function setEstado(string $estado): static
     {
         $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): static
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks->add($stock);
+            $stock->setLote($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): static
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getLote() === $this) {
+                $stock->setLote(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovimientoStock>
+     */
+    public function getMovimientoStocks(): Collection
+    {
+        return $this->movimientoStocks;
+    }
+
+    public function addMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if (!$this->movimientoStocks->contains($movimientoStock)) {
+            $this->movimientoStocks->add($movimientoStock);
+            $movimientoStock->setLote($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if ($this->movimientoStocks->removeElement($movimientoStock)) {
+            // set the owning side to null (unless already changed)
+            if ($movimientoStock->getLote() === $this) {
+                $movimientoStock->setLote(null);
+            }
+        }
 
         return $this;
     }

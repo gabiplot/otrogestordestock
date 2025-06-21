@@ -67,3 +67,20 @@ Almacén
     Dirección
 
     Responsable
+
+
+
+STOCK:
+- ID: 101, Lote: "ABC123", Vence: 2025-12-31, Cantidad: 200
+- ID: 102, Lote: "DEF456", Vence: 2026-06-15, Cantidad: 300
+- ID: 103, Lote: "GHI789", Vence: 2026-12-01, Cantidad: 100
+
+STOCK:
+- ID: 101, Almacén: "Central", Lote: "ABC123", Estado: "Disponible", Cantidad: 200
+- ID: 102, Almacén: "Central", Lote: "DEF456", Estado: "Disponible", Cantidad: 150
+- ID: 103, Almacén: "Norte", Lote: "ABC123", Estado: "Disponible", Cantidad: 80
+- ID: 104, Almacén: "Norte", Lote: "DEF456", Estado: "Reservado", Cantidad: 30
+
+sqlSELECT SUM(cantidad) as stock_total 
+FROM stock 
+WHERE producto_id = 001 AND estado = 'Disponible'

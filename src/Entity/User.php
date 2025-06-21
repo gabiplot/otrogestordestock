@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,6 +28,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     private UserPasswordHasherInterface $passwordHasher;
+
+    /**
+     * @var Collection<int, MovimientoStock>
+     */
+    #[ORM\OneToMany(targetEntity: MovimientoStock::class, mappedBy: 'user')]
+    private Collection $movimientoStocks;
+
+    public function __construct()
+    {
+        $this->movimientoStocks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -96,5 +109,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // Si almacenas datos temporales sensibles en el usuario, límpialos aquí
+    }
+
+    /**
+     * @return Collection<int, MovimientoStock>
+     */
+    public function getMovimientoStocks(): Collection
+    {
+        return $this->movimientoStocks;
+    }
+
+    public function addMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if (!$this->movimientoStocks->contains($movimientoStock)) {
+            $this->movimientoStocks->add($movimientoStock);
+            $movimientoStock->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if ($this->movimientoStocks->removeElement($movimientoStock)) {
+            // set the owning side to null (unless already changed)
+            if ($movimientoStock->getUser() === $this) {
+                $movimientoStock->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
