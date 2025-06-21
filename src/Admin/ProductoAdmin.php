@@ -38,9 +38,8 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('precio_de_costo')
             ->add('precio_de_venta')
             ->add('unidad_de_medida')
-            //->add('stock_minimo')
+            ->add('stock_minimo')
             ->add('activo')
-            ->add('categoria')
         ;
     }
 
@@ -52,9 +51,8 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('precio_de_costo')
             ->add('precio_de_venta')
             ->add('unidad_de_medida')
-            //->add('stock_minimo')
+            ->add('stock_minimo')
             ->add('activo')
-            ->add('categoria')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -63,33 +61,6 @@ final class ProductoAdmin extends AbstractAdmin
                 ],
             ]);
     }
-
-    /*
-    protected function configureFormFields(FormMapper $form): void
-    {
-        $form
-            //->add('id')
-            ->add('nombre')
-            ->add('precio_de_compra')
-            ->add('precio_venta')
-            ->add('unidad_de_medida',ChoiceType::class, [
-                'choices'  => [
-                    'UNIDAD' => 'U',
-                    'KILO' => 'K',
-                    'LITRO' => 'L'
-                ],
-            ])
-            ->add('stock_minimo')
-            ->add('categoria')
-            ->add('estado', ChoiceType::class, [
-                'choices'  => [
-                    'ACTIVO' => 'A',
-                    'INACTIVO' => 'I',
-                ],
-            ])
-        ;
-    }
-    */
 
     protected function configureFormFields(FormMapper $form): void
     {
@@ -104,13 +75,8 @@ final class ProductoAdmin extends AbstractAdmin
                         'required' => false,
                         'attr' => ['rows' => 3]
                     ])
-                    ->add('sku', TextType::class, [
-                        'label' => 'Código SKU',
-                        'required' => false
-                    ])
-                    ->add('categoria')
                 ->end()
-                ->with('Estado', ['class' => 'col-md-4'])
+                ->with('Activo', ['class' => 'col-md-4'])
                     ->add('activo', CheckboxType::class, [
                         'label' => 'Producto Activo',
                         'required' => false
@@ -121,19 +87,20 @@ final class ProductoAdmin extends AbstractAdmin
                 ->with('Precios', ['class' => 'col-md-6'])
                     ->add('precio_de_costo', MoneyType::class, [
                         'label' => 'Precio de Costo',
-                        'currency' => 'ARS'
+                        'currency' => 'ARS',
+                        'required' => true
                     ])
                     ->add('precio_de_venta', MoneyType::class, [
                         'label' => 'Precio de Venta',
-                        'currency' => 'ARS'
+                        'currency' => 'ARS',
+                        'required' => true
                     ])
                 ->end()
-                ->with('Stock', ['class' => 'col-md-6'])
-                    /*
+                ->with('Stock', ['class' => 'col-md-6'])            
                     ->add('stockMinimo', NumberType::class, [
-                        'label' => 'Stock Mínimo'
-                    ])
-                    */
+                        'label' => 'Stock Mínimo',
+                        'required' => true
+                    ])                    
                     ->add('unidad_de_medida', ChoiceType::class, [
                         'label' => 'Unidad de Medida',
                         'choices' => [
@@ -158,9 +125,7 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('precio_de_costo')
             ->add('precio_de_venta')
             ->add('unidad_de_medida')
-            //->add('stock_minimo')
-            ->add('activo')
-            ->add('categoria')
+            ->add('stock_minimo')            
         ;
     }
 }
