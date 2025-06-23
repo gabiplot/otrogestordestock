@@ -62,3 +62,8 @@ services:
         class: App\Admin\CuentaCorrienteClienteAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteCliente, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteCliente }
+
+    admin.caja:
+        class: App\Admin\CajaAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Caja, controller: ~, manager_type: orm, group: admin, label: Caja }
