@@ -52,3 +52,13 @@ services:
         class: App\Admin\DetalleVentaAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\DetalleVenta, controller: ~, manager_type: orm, group: admin, label: DetalleVenta }
+
+    admin.cobro_cliente:
+        class: App\Admin\CobroClienteAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\CobroCliente, controller: ~, manager_type: orm, group: admin, label: CobroCliente }
+
+    admin.cuenta_corriente_cliente:
+        class: App\Admin\CuentaCorrienteClienteAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteCliente, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteCliente }

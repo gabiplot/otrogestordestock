@@ -35,10 +35,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Venta::class, mappedBy: 'usuario')]
     private Collection $ventas;
 
+    /**
+     * @var Collection<int, CobroCliente>
+     */
+    #[ORM\OneToMany(targetEntity: CobroCliente::class, mappedBy: 'user')]
+    private Collection $cobroClientes;
+
     public function __construct()
     {
         $this->movimientoStocks = new ArrayCollection();
         $this->ventas = new ArrayCollection();
+        $this->cobroClientes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -136,6 +143,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($venta->getUsuario() === $this) {
                 $venta->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CobroCliente>
+     */
+    public function getCobroClientes(): Collection
+    {
+        return $this->cobroClientes;
+    }
+
+    public function addCobroCliente(CobroCliente $cobroCliente): static
+    {
+        if (!$this->cobroClientes->contains($cobroCliente)) {
+            $this->cobroClientes->add($cobroCliente);
+            $cobroCliente->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCobroCliente(CobroCliente $cobroCliente): static
+    {
+        if ($this->cobroClientes->removeElement($cobroCliente)) {
+            // set the owning side to null (unless already changed)
+            if ($cobroCliente->getUser() === $this) {
+                $cobroCliente->setUser(null);
             }
         }
 
