@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CobroClienteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,17 @@ class CobroCliente
 
     #[ORM\ManyToOne(inversedBy: 'cobroClientes')]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, CuentaCorrienteCliente>
+     */
+    #[ORM\OneToMany(targetEntity: CuentaCorrienteCliente::class, mappedBy: 'cobro')]
+    private Collection $cuentaCorrienteClientes;
+
+    public function __construct()
+    {
+        $this->cuentaCorrienteClientes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +133,36 @@ class CobroCliente
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CuentaCorrienteCliente>
+     */
+    public function getCuentaCorrienteClientes(): Collection
+    {
+        return $this->cuentaCorrienteClientes;
+    }
+
+    public function addCuentaCorrienteCliente(CuentaCorrienteCliente $cuentaCorrienteCliente): static
+    {
+        if (!$this->cuentaCorrienteClientes->contains($cuentaCorrienteCliente)) {
+            $this->cuentaCorrienteClientes->add($cuentaCorrienteCliente);
+            $cuentaCorrienteCliente->setCobro($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCuentaCorrienteCliente(CuentaCorrienteCliente $cuentaCorrienteCliente): static
+    {
+        if ($this->cuentaCorrienteClientes->removeElement($cuentaCorrienteCliente)) {
+            // set the owning side to null (unless already changed)
+            if ($cuentaCorrienteCliente->getCobro() === $this) {
+                $cuentaCorrienteCliente->setCobro(null);
+            }
+        }
 
         return $this;
     }

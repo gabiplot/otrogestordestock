@@ -20,10 +20,10 @@ class CuentaCorrienteCliente
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $fecha = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $concepto = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $tipo_movimiento = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
@@ -34,6 +34,15 @@ class CuentaCorrienteCliente
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $saldo = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $referencia_tipo = null;
+
+    #[ORM\ManyToOne(inversedBy: 'cuentaCorrienteClientes')]
+    private ?CobroCliente $cobro = null;
+
+    #[ORM\ManyToOne(inversedBy: 'cuentaCorrienteClientes')]
+    private ?Venta $venta = null;
 
     public function getId(): ?int
     {
@@ -69,7 +78,7 @@ class CuentaCorrienteCliente
         return $this->concepto;
     }
 
-    public function setConcepto(string $concepto): static
+    public function setConcepto(?string $concepto): static
     {
         $this->concepto = $concepto;
 
@@ -81,7 +90,7 @@ class CuentaCorrienteCliente
         return $this->tipo_movimiento;
     }
 
-    public function setTipoMovimiento(string $tipo_movimiento): static
+    public function setTipoMovimiento(?string $tipo_movimiento): static
     {
         $this->tipo_movimiento = $tipo_movimiento;
 
@@ -120,6 +129,54 @@ class CuentaCorrienteCliente
     public function setSaldo(string $saldo): static
     {
         $this->saldo = $saldo;
+
+        return $this;
+    }
+
+    public function getReferenciaTipo(): ?string
+    {
+        return $this->referencia_tipo;
+    }
+
+    public function setReferenciaTipo(?string $referencia_tipo): static
+    {
+
+        if ($referencia_tipo == null) {
+            $this->cobro = null;
+            $this->venta = null;
+        } else {
+            if ($referencia_tipo == 'cobro'){
+                $this->venta = null;
+            } else if ($referencia_tipo == 'venta') {
+                $this->cobro = null;
+            }
+        }
+
+        $this->referencia_tipo = $referencia_tipo;
+
+        return $this;
+    }
+
+    public function getCobro(): ?CobroCliente
+    {
+        return $this->cobro;
+    }
+
+    public function setCobro(?CobroCliente $cobro): static
+    {
+        $this->cobro = $cobro;
+
+        return $this;
+    }
+
+    public function getVenta(): ?Venta
+    {
+        return $this->venta;
+    }
+
+    public function setVenta(?Venta $venta): static
+    {
+        $this->venta = $venta;
 
         return $this;
     }

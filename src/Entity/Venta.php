@@ -52,9 +52,16 @@ class Venta
     #[ORM\OneToMany(targetEntity: DetalleVenta::class, mappedBy: 'venta')]
     private Collection $detalleVentas;
 
+    /**
+     * @var Collection<int, CuentaCorrienteCliente>
+     */
+    #[ORM\OneToMany(targetEntity: CuentaCorrienteCliente::class, mappedBy: 'venta')]
+    private Collection $cuentaCorrienteClientes;
+
     public function __construct()
     {
         $this->detalleVentas = new ArrayCollection();
+        $this->cuentaCorrienteClientes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -211,6 +218,36 @@ class Venta
             // set the owning side to null (unless already changed)
             if ($detalleVenta->getVenta() === $this) {
                 $detalleVenta->setVenta(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CuentaCorrienteCliente>
+     */
+    public function getCuentaCorrienteClientes(): Collection
+    {
+        return $this->cuentaCorrienteClientes;
+    }
+
+    public function addCuentaCorrienteCliente(CuentaCorrienteCliente $cuentaCorrienteCliente): static
+    {
+        if (!$this->cuentaCorrienteClientes->contains($cuentaCorrienteCliente)) {
+            $this->cuentaCorrienteClientes->add($cuentaCorrienteCliente);
+            $cuentaCorrienteCliente->setVenta($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCuentaCorrienteCliente(CuentaCorrienteCliente $cuentaCorrienteCliente): static
+    {
+        if ($this->cuentaCorrienteClientes->removeElement($cuentaCorrienteCliente)) {
+            // set the owning side to null (unless already changed)
+            if ($cuentaCorrienteCliente->getVenta() === $this) {
+                $cuentaCorrienteCliente->setVenta(null);
             }
         }
 
