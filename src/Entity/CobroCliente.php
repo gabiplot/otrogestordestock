@@ -40,13 +40,18 @@ class CobroCliente
     /**
      * @var Collection<int, CuentaCorrienteCliente>
      */
-    #[ORM\OneToMany(targetEntity: CuentaCorrienteCliente::class, mappedBy: 'cobro')]
+    #[ORM\OneToMany(targetEntity: CuentaCorrienteCliente::class, mappedBy: 'cobro_cliente')]
     private Collection $cuentaCorrienteClientes;
 
     public function __construct()
     {
         $this->cuentaCorrienteClientes = new ArrayCollection();
     }
+
+    public function __toString(): string
+    {
+        return strval($this->id);
+    }      
 
     public function getId(): ?int
     {
@@ -149,7 +154,7 @@ class CobroCliente
     {
         if (!$this->cuentaCorrienteClientes->contains($cuentaCorrienteCliente)) {
             $this->cuentaCorrienteClientes->add($cuentaCorrienteCliente);
-            $cuentaCorrienteCliente->setCobro($this);
+            $cuentaCorrienteCliente->setCobroCliente($this);
         }
 
         return $this;
@@ -159,8 +164,8 @@ class CobroCliente
     {
         if ($this->cuentaCorrienteClientes->removeElement($cuentaCorrienteCliente)) {
             // set the owning side to null (unless already changed)
-            if ($cuentaCorrienteCliente->getCobro() === $this) {
-                $cuentaCorrienteCliente->setCobro(null);
+            if ($cuentaCorrienteCliente->getCobroCliente() === $this) {
+                $cuentaCorrienteCliente->setCobroCliente(null);
             }
         }
 

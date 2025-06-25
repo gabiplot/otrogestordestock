@@ -35,14 +35,19 @@ class CuentaCorrienteCliente
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $saldo = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $referencia_tipo = null;
-
-    #[ORM\ManyToOne(inversedBy: 'cuentaCorrienteClientes')]
-    private ?CobroCliente $cobro = null;
-
     #[ORM\ManyToOne(inversedBy: 'cuentaCorrienteClientes')]
     private ?Venta $venta = null;
+
+    #[ORM\ManyToOne(inversedBy: 'cuentaCorrienteClientes')]
+    private ?CobroCliente $cobro_cliente = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tipo_referencia = null;
+
+    public function __toString(): string
+    {
+        return strval($this->id);
+    }  
 
     public function getId(): ?int
     {
@@ -133,42 +138,6 @@ class CuentaCorrienteCliente
         return $this;
     }
 
-    public function getReferenciaTipo(): ?string
-    {
-        return $this->referencia_tipo;
-    }
-
-    public function setReferenciaTipo(?string $referencia_tipo): static
-    {
-
-        if ($referencia_tipo == null) {
-            $this->cobro = null;
-            $this->venta = null;
-        } else {
-            if ($referencia_tipo == 'cobro'){
-                $this->venta = null;
-            } else if ($referencia_tipo == 'venta') {
-                $this->cobro = null;
-            }
-        }
-
-        $this->referencia_tipo = $referencia_tipo;
-
-        return $this;
-    }
-
-    public function getCobro(): ?CobroCliente
-    {
-        return $this->cobro;
-    }
-
-    public function setCobro(?CobroCliente $cobro): static
-    {
-        $this->cobro = $cobro;
-
-        return $this;
-    }
-
     public function getVenta(): ?Venta
     {
         return $this->venta;
@@ -177,6 +146,30 @@ class CuentaCorrienteCliente
     public function setVenta(?Venta $venta): static
     {
         $this->venta = $venta;
+
+        return $this;
+    }
+
+    public function getCobroCliente(): ?CobroCliente
+    {
+        return $this->cobro_cliente;
+    }
+
+    public function setCobroCliente(?CobroCliente $cobro_cliente): static
+    {
+        $this->cobro_cliente = $cobro_cliente;
+
+        return $this;
+    }
+
+    public function getTipoReferencia(): ?string
+    {
+        return $this->tipo_referencia;
+    }
+
+    public function setTipoReferencia(?string $tipo_referencia): static
+    {
+        $this->tipo_referencia = $tipo_referencia;
 
         return $this;
     }
