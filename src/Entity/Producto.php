@@ -46,9 +46,16 @@ class Producto
     #[ORM\OneToMany(targetEntity: DetalleVenta::class, mappedBy: 'producto')]
     private Collection $detalleVentas;
 
+    /**
+     * @var Collection<int, DetalleCompra>
+     */
+    #[ORM\OneToMany(targetEntity: DetalleCompra::class, mappedBy: 'producto')]
+    private Collection $detalleCompras;
+
     public function __construct()
     {
         $this->detalleVentas = new ArrayCollection();
+        $this->detalleCompras = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -181,6 +188,36 @@ class Producto
             // set the owning side to null (unless already changed)
             if ($detalleVenta->getProducto() === $this) {
                 $detalleVenta->setProducto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetalleCompra>
+     */
+    public function getDetalleCompras(): Collection
+    {
+        return $this->detalleCompras;
+    }
+
+    public function addDetalleCompra(DetalleCompra $detalleCompra): static
+    {
+        if (!$this->detalleCompras->contains($detalleCompra)) {
+            $this->detalleCompras->add($detalleCompra);
+            $detalleCompra->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetalleCompra(DetalleCompra $detalleCompra): static
+    {
+        if ($this->detalleCompras->removeElement($detalleCompra)) {
+            // set the owning side to null (unless already changed)
+            if ($detalleCompra->getProducto() === $this) {
+                $detalleCompra->setProducto(null);
             }
         }
 

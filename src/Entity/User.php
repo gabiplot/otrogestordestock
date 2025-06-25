@@ -47,12 +47,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Caja::class, mappedBy: 'user')]
     private Collection $cajas;
 
+    /**
+     * @var Collection<int, PagoProveedor>
+     */
+    #[ORM\OneToMany(targetEntity: PagoProveedor::class, mappedBy: 'usuario')]
+    private Collection $pagoProveedors;
+
+    /**
+     * @var Collection<int, Compra>
+     */
+    #[ORM\OneToMany(targetEntity: Compra::class, mappedBy: 'usuario')]
+    private Collection $compras;
+
     public function __construct()
     {
         $this->movimientoStocks = new ArrayCollection();
         $this->ventas = new ArrayCollection();
         $this->cobroClientes = new ArrayCollection();
         $this->cajas = new ArrayCollection();
+        $this->pagoProveedors = new ArrayCollection();
+        $this->compras = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -210,6 +224,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($caja->getUser() === $this) {
                 $caja->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PagoProveedor>
+     */
+    public function getPagoProveedors(): Collection
+    {
+        return $this->pagoProveedors;
+    }
+
+    public function addPagoProveedor(PagoProveedor $pagoProveedor): static
+    {
+        if (!$this->pagoProveedors->contains($pagoProveedor)) {
+            $this->pagoProveedors->add($pagoProveedor);
+            $pagoProveedor->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removePagoProveedor(PagoProveedor $pagoProveedor): static
+    {
+        if ($this->pagoProveedors->removeElement($pagoProveedor)) {
+            // set the owning side to null (unless already changed)
+            if ($pagoProveedor->getUsuario() === $this) {
+                $pagoProveedor->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Compra>
+     */
+    public function getCompras(): Collection
+    {
+        return $this->compras;
+    }
+
+    public function addCompra(Compra $compra): static
+    {
+        if (!$this->compras->contains($compra)) {
+            $this->compras->add($compra);
+            $compra->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompra(Compra $compra): static
+    {
+        if ($this->compras->removeElement($compra)) {
+            // set the owning side to null (unless already changed)
+            if ($compra->getUsuario() === $this) {
+                $compra->setUsuario(null);
             }
         }
 
