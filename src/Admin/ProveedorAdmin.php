@@ -27,6 +27,7 @@ final class ProveedorAdmin extends AbstractAdmin
         $filter
             ->add('id')
             ->add('nombre')
+            ->add('cuit')
         ;
     }
 
@@ -35,6 +36,14 @@ final class ProveedorAdmin extends AbstractAdmin
         $list
             ->add('id')
             ->add('nombre')
+            ->add('cuit')
+            //->add('email')
+            //->add('telefono')
+            //->add('direccion')            
+            //->add('contacto')
+            //->add('fecha_registro')
+            ->add('contactocompleto')
+            ->add('activo')               
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -49,6 +58,13 @@ final class ProveedorAdmin extends AbstractAdmin
         $form
             //->add('id')
             ->add('nombre')
+            ->add('cuit')
+            ->add('email')
+            ->add('telefono')
+            ->add('direccion')            
+            ->add('contacto')
+            ->add('fecha_registro')
+            ->add('activo')            
         ;
     }
 
@@ -57,6 +73,13 @@ final class ProveedorAdmin extends AbstractAdmin
         $show
             //->add('id')
             ->add('nombre')
+            ->add('email')
+            ->add('telefono')
+            ->add('direccion')
+            ->add('cuit')
+            ->add('contacto')
+            ->add('fecha_registro')
+            ->add('activo')               
         ;
     }
 }

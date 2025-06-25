@@ -87,3 +87,8 @@ services:
         class: App\Admin\CuentaCorrienteProveedorAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteProveedor, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteProveedor }
+
+    admin.movimiento_stock:
+        class: App\Admin\MovimientoStockAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\MovimientoStock, controller: ~, manager_type: orm, group: admin, label: MovimientoStock }

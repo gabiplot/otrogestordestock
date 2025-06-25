@@ -28,6 +28,7 @@ final class ClienteAdmin extends AbstractAdmin
         $filter
             ->add('id')
             ->add('nombre')
+            ->add('cuit')
         ;
     }
 
@@ -35,7 +36,12 @@ final class ClienteAdmin extends AbstractAdmin
     {
         $list
             ->add('id')
-            ->add('nombre')
+            ->add('nombre')                                    
+            ->add('cuit')
+            ->add('email')
+            ->add('tipo_cliente')
+            //->add('fecha_registro')
+            ->add('activo')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -50,6 +56,11 @@ final class ClienteAdmin extends AbstractAdmin
         $form
             //->add('id')
             ->add('nombre')
+            ->add('cuit')
+            ->add('email')
+            ->add('tipo_cliente')
+            ->add('fecha_registro')
+            ->add('activo')            
         ;
     }
 
@@ -58,6 +69,11 @@ final class ClienteAdmin extends AbstractAdmin
         $show
             //->add('id')
             ->add('nombre')
+            ->add('cuit')
+            ->add('email')
+            ->add('tipo_cliente')
+            ->add('fecha_registro')
+            ->add('activo')            
         ;
     }
 }

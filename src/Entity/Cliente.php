@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ClienteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClienteRepository::class)]
@@ -35,6 +36,27 @@ class Cliente
      */
     #[ORM\OneToMany(targetEntity: CobroCliente::class, mappedBy: 'cliente')]
     private Collection $cobroClientes;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $telefono = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $direccion = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cuit = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tipo_cliente = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $fecha_registro = null;
+
+    #[ORM\Column]
+    private ?bool $activo = null;
 
     public function __construct()
     {
@@ -151,6 +173,90 @@ class Cliente
                 $cobroCliente->setCliente(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getTelefono(): ?string
+    {
+        return $this->telefono;
+    }
+
+    public function setTelefono(?string $telefono): static
+    {
+        $this->telefono = $telefono;
+
+        return $this;
+    }
+
+    public function getDireccion(): ?string
+    {
+        return $this->direccion;
+    }
+
+    public function setDireccion(?string $direccion): static
+    {
+        $this->direccion = $direccion;
+
+        return $this;
+    }
+
+    public function getCuit(): ?string
+    {
+        return $this->cuit;
+    }
+
+    public function setCuit(?string $cuit): static
+    {
+        $this->cuit = $cuit;
+
+        return $this;
+    }
+
+    public function getTipoCliente(): ?string
+    {
+        return $this->tipo_cliente;
+    }
+
+    public function setTipoCliente(?string $tipo_cliente): static
+    {
+        $this->tipo_cliente = $tipo_cliente;
+
+        return $this;
+    }
+
+    public function getFechaRegistro(): ?\DateTime
+    {
+        return $this->fecha_registro;
+    }
+
+    public function setFechaRegistro(?\DateTime $fecha_registro): static
+    {
+        $this->fecha_registro = $fecha_registro;
+
+        return $this;
+    }
+
+    public function isActivo(): ?bool
+    {
+        return $this->activo;
+    }
+
+    public function setActivo(bool $activo): static
+    {
+        $this->activo = $activo;
 
         return $this;
     }
