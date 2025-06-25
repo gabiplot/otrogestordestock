@@ -16,7 +16,11 @@ security:
                #ROLE_SUPER_ADMIN #ACCESO A TODO EL SISTEMA
                #ROLE_USER,
                #ROLE_SONATA_ADMIN, 
-               ROLE_ADMIN_USER_ALL,               
+
+               #-- TABLA ROLES Y PERMISOS --
+               ROLE_ADMIN_USER_ALL,
+
+               #-- TABLAS COMUNES --                              
                ROLE_ADMIN_CLIENTE_ALL,
                ROLE_ADMIN_PROVEEDOR_ALL,
                ROLE_ADMIN_PRODUCTO_ALL,
@@ -24,10 +28,24 @@ security:
                ROLE_ADMIN_CATEGORIA_ALL,
                ROLE_ADMIN_STOCK_ALL,
                ROLE_ADMIN_MOVIMIENTO_STOCK_ALL,
+
+               #-- VENTA --
                ROLE_ADMIN_VENTA_ALL,
                ROLE_ADMIN_DETALLE_VENTA_ALL,
-               ROLE_ADMIN_COBRO_CLIENTE_ALL,
+
+               #-- COMPRA --
+               ROLE_ADMIN_COMPRA_ALL,
+               ROLE_ADMIN_DETALLE_COMPRA_ALL,
+
+               #-- CTA CTE CLIENTE --
                ROLE_ADMIN_CUENTA_CORRIENTE_CLIENTE_ALL,
+               ROLE_ADMIN_COBRO_CLIENTE_ALL,
+
+               #-- CTA CTE PROVEEDOR --
+               ROLE_ADMIN_PAGO_PROVEEDOR_ALL,
+               ROLE_ADMIN_CUENTA_CORRIENTE_PROVEEDOR_ALL,
+
+               #-- CAJA --
                ROLE_ADMIN_CAJA_ALL
                ]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]

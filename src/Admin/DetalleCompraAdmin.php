@@ -10,20 +10,15 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-final class CajaAdmin extends AbstractAdmin
+final class DetalleCompraAdmin extends AbstractAdmin
 {
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
             ->add('id')
-            ->add('fecha')
-            ->add('concepto')
-            ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
-            ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
+            ->add('cantidad')
+            ->add('precio_unitario')
+            ->add('subtotal')
         ;
     }
 
@@ -31,14 +26,9 @@ final class CajaAdmin extends AbstractAdmin
     {
         $list
             ->add('id')
-            ->add('fecha')
-            ->add('concepto')
-            ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
-            ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
+            ->add('cantidad')
+            ->add('precio_unitario')
+            ->add('subtotal')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -52,14 +42,9 @@ final class CajaAdmin extends AbstractAdmin
     {
         $form
             //->add('id')
-            ->add('fecha')
-            ->add('concepto')
-            ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
-            ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
+            ->add('cantidad')
+            ->add('precio_unitario')
+            ->add('subtotal')
         ;
     }
 
@@ -67,14 +52,9 @@ final class CajaAdmin extends AbstractAdmin
     {
         $show
             ->add('id')
-            ->add('fecha')
-            ->add('concepto')
-            ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
-            ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
+            ->add('cantidad')
+            ->add('precio_unitario')
+            ->add('subtotal')
         ;
     }
 }

@@ -59,6 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Compra::class, mappedBy: 'usuario')]
     private Collection $compras;
 
+    /**
+     * @var Collection<int, MovimientoStock>
+     */
+    #[ORM\OneToMany(targetEntity: MovimientoStock::class, mappedBy: 'usuario')]
+    private Collection $movimientoStocks;
+
     public function __construct()
     {
         $this->movimientoStocks = new ArrayCollection();
@@ -284,6 +290,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($compra->getUsuario() === $this) {
                 $compra->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovimientoStock>
+     */
+    public function getMovimientoStocks(): Collection
+    {
+        return $this->movimientoStocks;
+    }
+
+    public function addMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if (!$this->movimientoStocks->contains($movimientoStock)) {
+            $this->movimientoStocks->add($movimientoStock);
+            $movimientoStock->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if ($this->movimientoStocks->removeElement($movimientoStock)) {
+            // set the owning side to null (unless already changed)
+            if ($movimientoStock->getUsuario() === $this) {
+                $movimientoStock->setUsuario(null);
             }
         }
 

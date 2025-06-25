@@ -52,10 +52,17 @@ class Producto
     #[ORM\OneToMany(targetEntity: DetalleCompra::class, mappedBy: 'producto')]
     private Collection $detalleCompras;
 
+    /**
+     * @var Collection<int, MovimientoStock>
+     */
+    #[ORM\OneToMany(targetEntity: MovimientoStock::class, mappedBy: 'producto')]
+    private Collection $movimientoStocks;
+
     public function __construct()
     {
         $this->detalleVentas = new ArrayCollection();
         $this->detalleCompras = new ArrayCollection();
+        $this->movimientoStocks = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -218,6 +225,36 @@ class Producto
             // set the owning side to null (unless already changed)
             if ($detalleCompra->getProducto() === $this) {
                 $detalleCompra->setProducto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovimientoStock>
+     */
+    public function getMovimientoStocks(): Collection
+    {
+        return $this->movimientoStocks;
+    }
+
+    public function addMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if (!$this->movimientoStocks->contains($movimientoStock)) {
+            $this->movimientoStocks->add($movimientoStock);
+            $movimientoStock->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimientoStock(MovimientoStock $movimientoStock): static
+    {
+        if ($this->movimientoStocks->removeElement($movimientoStock)) {
+            // set the owning side to null (unless already changed)
+            if ($movimientoStock->getProducto() === $this) {
+                $movimientoStock->setProducto(null);
             }
         }
 

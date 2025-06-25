@@ -10,7 +10,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-final class CajaAdmin extends AbstractAdmin
+final class CuentaCorrienteProveedorAdmin extends AbstractAdmin
 {
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
@@ -19,11 +19,10 @@ final class CajaAdmin extends AbstractAdmin
             ->add('fecha')
             ->add('concepto')
             ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
+            ->add('tipo_referencia')
+            ->add('debe')
+            ->add('haber')
             ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
         ;
     }
 
@@ -34,11 +33,10 @@ final class CajaAdmin extends AbstractAdmin
             ->add('fecha')
             ->add('concepto')
             ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
+            ->add('tipo_referencia')
+            ->add('debe')
+            ->add('haber')
             ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
@@ -55,11 +53,10 @@ final class CajaAdmin extends AbstractAdmin
             ->add('fecha')
             ->add('concepto')
             ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
+            ->add('tipo_referencia')
+            ->add('debe')
+            ->add('haber')
             ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
         ;
     }
 
@@ -70,11 +67,10 @@ final class CajaAdmin extends AbstractAdmin
             ->add('fecha')
             ->add('concepto')
             ->add('tipo_movimiento')
-            ->add('ingreso')
-            ->add('egreso')
+            ->add('tipo_referencia')
+            ->add('debe')
+            ->add('haber')
             ->add('saldo')
-            ->add('metodo_pago')
-            ->add('categoria')
         ;
     }
 }

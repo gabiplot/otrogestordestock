@@ -67,3 +67,23 @@ services:
         class: App\Admin\CajaAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Caja, controller: ~, manager_type: orm, group: admin, label: Caja }
+
+    admin.compra:
+        class: App\Admin\CompraAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Compra, controller: ~, manager_type: orm, group: admin, label: Compra }
+
+    admin.detalle_compra:
+        class: App\Admin\DetalleCompraAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\DetalleCompra, controller: ~, manager_type: orm, group: admin, label: DetalleCompra }
+
+    admin.pago_proveedor:
+        class: App\Admin\PagoProveedorAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\PagoProveedor, controller: ~, manager_type: orm, group: admin, label: PagoProveedor }
+
+    admin.cuenta_corriente_proveedor:
+        class: App\Admin\CuentaCorrienteProveedorAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteProveedor, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteProveedor }
