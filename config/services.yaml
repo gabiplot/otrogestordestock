@@ -46,12 +46,15 @@ services:
     admin.venta:
         class: App\Admin\VentaAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Venta, controller: ~, manager_type: orm, group: admin, label: Venta }
+            - { name: sonata.admin, model_class: App\Entity\Venta, controller: App\Controller\VentaAdminController, manager_type: orm, group: admin, label: Venta }
+        calls:
+            - [addChild, ['@admin.detalle_venta', 'venta']]
+
 
     admin.detalle_venta:
         class: App\Admin\DetalleVentaAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\DetalleVenta, controller: ~, manager_type: orm, group: admin, label: DetalleVenta }
+            - { name: sonata.admin, model_class: App\Entity\DetalleVenta, controller: ~, manager_type: orm, group: admin, label: DetalleVenta }    
 
     admin.cobro_cliente:
         class: App\Admin\CobroClienteAdmin

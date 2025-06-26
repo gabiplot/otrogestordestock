@@ -67,7 +67,9 @@ class Cliente
 
     public function __toString(): string
     {
-        return strval($this->nombre);
+        $cuit = ($this->cuit == null) ? "" : strval(", " . $this->cuit);
+
+        return strval($this->nombre . $cuit);
     }
 
     public function getId(): ?int
