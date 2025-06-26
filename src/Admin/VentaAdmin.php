@@ -63,17 +63,23 @@ final class VentaAdmin extends AbstractAdmin
             // CREATE
             $form
             //->add('id')
+            ->with('Datos del Cliente', ['class' => 'col-md-6'])
             ->add('cliente', ModelAutocompleteType::class, [
                         'property' => ['nombre','cuit'],
-                        'btn_add' => false,
-                        'placeholder'=>'Seleccione el cliente'
+                        //'btn_add' => true,
+                        'placeholder'=>'Seleccione el cliente',
+                        //'row_attr'=>['class'=>'col-md-6'],
                     ])
+            ->end()
+            ->with('Fecha', ['class' => 'col-md-6'])
             ->add('fecha',null,[
                 'widget'=>'single_text',
                 'data'=>(new \DateTime('now')),
                 //'row_attr'=>['class'=>'col-md-2'],
                 //'required'=>true,
-            ]);      
+            ])
+            ->end()
+            ;      
         } else if ($this->isCurrentRoute('edit')) {
             // EDIT
             $form
@@ -141,6 +147,16 @@ final class VentaAdmin extends AbstractAdmin
     /*
      * FUNCIONES PROPIAS 
      */
+    //ORDENAR POR DEFECTO
+	protected function configureDefaultSortValues(array &$sortValues): void
+	{
+        
+    	$sortValues['_sort_order'] = 'DESC';
+
+    	$sortValues['_sort_by'] = 'id';
+	}
+
+    //RUTA POR DEFECTO PARA USAR EN EL CONTROLLER
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         $collection->add('detalle_venta', $this->getRouterIdParameter().'/detalleventa/list');

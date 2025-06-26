@@ -10,7 +10,6 @@ class VentaAdminController extends CRUDController
     /**
      * Redirijo al detalle_venta, sino continuo.
      *
-     * @phpstan-param T $object
      */
     protected function redirectTo(Request $request, object $object): RedirectResponse
     {
