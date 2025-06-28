@@ -34,6 +34,7 @@ final class ProductoAdmin extends AbstractAdmin
     {
         $filter
             ->add('id')
+            ->add('codigo_producto')
             ->add('nombre')
             ->add('precio_de_costo')
             ->add('precio_de_venta')
@@ -47,6 +48,7 @@ final class ProductoAdmin extends AbstractAdmin
     {
         $list
             ->add('id')
+            ->add('codigo_producto')
             ->add('nombre')
             ->add('precio_de_costo')
             ->add('precio_de_venta')
@@ -70,6 +72,7 @@ final class ProductoAdmin extends AbstractAdmin
                     ->add('nombre', TextType::class, [
                         'label' => 'Nombre del Producto'
                     ])
+                    ->add('codigo_producto')                    
                     ->add('descripcion', TextareaType::class, [
                         'label' => 'Descripción',
                         'required' => false,
@@ -100,7 +103,11 @@ final class ProductoAdmin extends AbstractAdmin
                     ->add('stockMinimo', NumberType::class, [
                         'label' => 'Stock Mínimo',
                         'required' => true
-                    ])                    
+                    ])       
+                    ->add('stockActual', NumberType::class, [
+                        'label' => 'Stock Actual',
+                        'required' => true
+                    ])                                  
                     ->add('unidad_de_medida', ChoiceType::class, [
                         'label' => 'Unidad de Medida',
                         'choices' => [
@@ -121,6 +128,7 @@ final class ProductoAdmin extends AbstractAdmin
     {
         $show
             ->add('id')
+            ->add('codigo_producto')
             ->add('nombre')
             ->add('precio_de_costo')
             ->add('precio_de_venta')

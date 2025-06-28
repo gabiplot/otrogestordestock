@@ -58,6 +58,9 @@ class Producto
     #[ORM\OneToMany(targetEntity: MovimientoStock::class, mappedBy: 'producto')]
     private Collection $movimientoStocks;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $codigo_producto = null;
+
     public function __construct()
     {
         $this->detalleVentas = new ArrayCollection();
@@ -257,6 +260,18 @@ class Producto
                 $movimientoStock->setProducto(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCodigoProducto(): ?string
+    {
+        return $this->codigo_producto;
+    }
+
+    public function setCodigoProducto(?string $codigo_producto): static
+    {
+        $this->codigo_producto = $codigo_producto;
 
         return $this;
     }

@@ -10,6 +10,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
+use Sonata\AdminBundle\Route\RouteCollectionInterface;
 
 final class DetalleVentaAdmin extends AbstractAdmin
 {
@@ -96,6 +97,17 @@ final class DetalleVentaAdmin extends AbstractAdmin
             ->add('subtotal')
         ;
     }
+
+
+    /*
+    * funciones particulares 
+    */
+
+    protected function configureRoutes(RouteCollectionInterface $collection): void
+    {
+        $collection
+            ->add('agregar', 'agregar');
+    }    
 
 	public function configureBatchActions($actions): array
 	{
