@@ -52,7 +52,7 @@ final class VentaAdmin extends AbstractAdmin
                 'actions' => [
                     'show' => [],
                     //'edit' => [],
-                    //'delete' => [],
+                    'delete' => [],
                 ],
             ]);
     }
