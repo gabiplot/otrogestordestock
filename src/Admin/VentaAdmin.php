@@ -160,6 +160,7 @@ final class VentaAdmin extends AbstractAdmin
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         $collection->add('detalle_venta', $this->getRouterIdParameter().'/detalleventa/list');
+        $collection->add('agregar_producto', $this->getRouterIdParameter().'/detalleventa/agregar_producto');
     }
 
     public function prePersist(object $object): void

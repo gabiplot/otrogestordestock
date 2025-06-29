@@ -9,15 +9,20 @@ file that was distributed with this source code.
 
 #}
 
+{#
+    EN ESTA PLANTILLA DIBUJO EL FORMULARIO Y LUEGO
+    LO REENVIO AL CONTROLLER DE VENTA. PARA AGREGAR PRODUCTOS
+#}
+
 {% extends '@SonataAdmin/CRUD/base_list.html.twig' %}
 
 {% block sonata_admin_content %}
-
+{% if admin.isChild %}
 <div class="row">
     <div class="col-xs-12 col-md-12" style="margin-bottom: 10px;">
         <div class="box box-primary">
             <div class="box-body">
-                <form class="sonata-filter-form form-horizontal" action="{{ asset('admin/app/detalleventa/agregar') }}">
+                <form class="sonata-filter-form form-horizontal" action="{{ path('admin_app_venta_agregar_producto',{ id: admin.parent.subject.id }) }} ">
                     <div class="row">
                         <div class="col-xs-8 col-md-8 text-center">
                             <div class="form-group">
@@ -36,9 +41,17 @@ file that was distributed with this source code.
                         </div>
                     </div>
                 </form>
+
+                <div class="row">
+                    <hr/>                
+                    <div class="col-xs-12 col-md-12 text-right">                        
+                        <label class="col-xs-12 col-md-12 control-label" style="font-size:x-large; border:1px solid;">TOTAL: 9999999999.99</label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {{ parent() }}
 {% endblock sonata_admin_content %}

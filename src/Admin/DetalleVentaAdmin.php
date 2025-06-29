@@ -101,13 +101,7 @@ final class DetalleVentaAdmin extends AbstractAdmin
 
     /*
     * funciones particulares 
-    */
-
-    protected function configureRoutes(RouteCollectionInterface $collection): void
-    {
-        $collection
-            ->add('agregar', 'agregar');
-    }    
+    */    
 
 	public function configureBatchActions($actions): array
 	{
