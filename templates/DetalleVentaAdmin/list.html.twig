@@ -19,13 +19,13 @@ file that was distributed with this source code.
 {% block sonata_admin_content %}
 {% if admin.isChild %}
 <div class="row">
-    <div class="col-xs-12 col-md-12" style="margin-bottom: 10px;">
-        <div class="box box-primary">
+    <div class="col-xs-12 col-md-12" style="margin-bottom: 0px;">
+        <div class="box box-primary" style="margin-bottom:10px;">
             <div class="box-body">
                 <form class="sonata-filter-form form-horizontal" action="{{ path('admin_app_venta_agregar_producto',{ id: admin.parent.subject.id }) }} ">
                     <div class="row">
                         <div class="col-xs-8 col-md-8 text-center">
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom:0px;">
                                 <label class="col-xs-3 col-md-3 control-label">Cantidad: </label>
                                 <div class="col-xs-2 col-md-2">
                                 <input type="text" id="" name="cant_prod" value="1" class=" form-control">
@@ -40,12 +40,10 @@ file that was distributed with this source code.
                             <button type="submit" class="btn btn-primary"><i class="fas fa-plus" aria-hidden="true"></i> Agregar</button>
                         </div>
                     </div>
-                </form>
-
-                <div class="row">
-                    <hr/>                
+                </form>                
+                <div class="row" style="margin-top: 10px;">                                    
                     <div class="col-xs-12 col-md-12 text-right">                        
-                        <label class="col-xs-12 col-md-12 control-label" style="font-size:x-large; border:1px solid;">TOTAL: 9999999999.99</label>
+                        <label class="col-xs-12 col-md-12 control-label" style="font-size:x-large; border:1px solid;">TOTAL: ${{ admin.parent.subject.getSubtotalVenta }}</label>
                     </div>
                 </div>
             </div>

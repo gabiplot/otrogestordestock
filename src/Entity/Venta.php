@@ -224,6 +224,16 @@ class Venta
         return $this;
     }
 
+    public function getSubtotalVenta(): string
+    {
+
+        $subtotal = 0.0;
+        foreach ($this->detalleVentas as $dv){
+            $subtotal = $subtotal + $dv->getSubtotal();
+        }
+        return sprintf("%.2f", $subtotal );
+    }
+
     /**
      * @return Collection<int, CuentaCorrienteCliente>
      */

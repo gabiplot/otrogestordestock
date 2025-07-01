@@ -5,6 +5,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use App\Entity\DetalleVenta;
+
 class VentaAdminController extends CRUDController
 {
 
@@ -28,9 +30,10 @@ class VentaAdminController extends CRUDController
     public function agregarProductoAction(request $request): RedirectResponse
     {
 
+
         //dd($request);
 
-        $object = $this->admin->getSubject();
+        $venta = $this->admin->getSubject();
 
         $cod_prod = strip_tags($request->get('cod_prod',''));
 
@@ -42,13 +45,38 @@ class VentaAdminController extends CRUDController
                          ->getRepository('App\Entity\Producto')
                          ->findOneBy(['codigo_producto' => $cod_prod]);
 
+
+        //dd($detalle_venta);
+
         if ($producto == null){
             $this->addFlash('sonata_flash_error', 'No Existe el producto con codigo: ' . $cod_prod );
-            return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $object->getId()]));
+            return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
         } else {
-            $this->addFlash('sonata_flash_success', 'Producto existente');
-            return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $object->getId()]));
+            //$this->addFlash('sonata_flash_success', 'Producto existente');
 
+            //dd($producto);
+
+            $detalle_venta = new DetalleVenta;                                 
+
+            $subtotal = $cant_prod * $producto->getPrecioDeVenta();
+    
+            $detalle_venta->setProducto($producto);
+            $detalle_venta->setCantidad($cant_prod);
+            $detalle_venta->setPrecioUnitario($producto->getPrecioDeVenta());
+            $detalle_venta->setDescuentoItem(0.0);
+            $detalle_venta->setSubtotal($subtotal);
+            $detalle_venta->setVenta($venta);
+            //$venta->addDetalleVenta($detalle_venta);
+            
+            $entityManager =  $this->admin
+                                   ->getModelManager()
+                                   ->getEntityManager('App\Entity\Venta');
+
+            $entityManager->persist($detalle_venta);
+
+            $entityManager->flush();
+
+            return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
         }
 
         

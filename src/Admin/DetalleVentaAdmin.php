@@ -103,6 +103,14 @@ final class DetalleVentaAdmin extends AbstractAdmin
     * funciones particulares 
     */    
 
+	protected function configureDefaultSortValues(array &$sortValues): void
+	{
+        //ordenar por id descendente
+    	$sortValues['_sort_order'] = 'DESC';
+    	$sortValues['_sort_by'] = 'id';
+	}
+
+
 	public function configureBatchActions($actions): array
 	{
     	if (isset($actions['delete'])) {
