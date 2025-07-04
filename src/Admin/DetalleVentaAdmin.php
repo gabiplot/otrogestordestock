@@ -43,9 +43,16 @@ final class DetalleVentaAdmin extends AbstractAdmin
 
     protected function configureListFields(ListMapper $list): void
     {
+        if ($this->isChild()){
+            $list
+                ->add('id');
+        } else {
+            $list
+                ->add('id')
+                ->add('venta');
+        }
+
         $list
-            ->add('id')
-            ->add('venta')
             ->add('producto')
             ->add('cantidad')
             ->add('precio_unitario')

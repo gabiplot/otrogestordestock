@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\DetalleVenta;
 use Symfony\Component\HttpFoundation\Request;
 use Sonata\AdminBundle\Controller\CRUDController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
-use App\Entity\DetalleVenta;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class VentaAdminController extends CRUDController
 {
@@ -29,8 +29,6 @@ class VentaAdminController extends CRUDController
      */
     public function agregarProductoAction(request $request): RedirectResponse
     {
-
-
         //dd($request);
 
         $venta = $this->admin->getSubject();
@@ -82,5 +80,35 @@ class VentaAdminController extends CRUDController
         
         //dd();
 
-    }    
+    }
+    
+    public function finalizarVentaAction(request $request): RedirectResponse
+    {        
+        $venta = $this->admin->getSubject();
+        $detalle_ventas = $venta->getDetalleVentas();
+
+        //dump($venta);
+
+        //dump($venta->getSubtotalVenta());
+
+        /*
+        foreach($detalle_ventas as $detalle_venta)
+        {
+            dump($detalle_venta);
+        }
+        */
+        $venta->setSubTotal($venta->getSubtotalVenta());
+        $venta->setFormaPago("EFECTIVO");
+        $venta->setTotal($venta->getSubtotalVenta());
+
+        $entityManager =  $this->admin
+                               ->getModelManager()
+                               ->getEntityManager('App\Entity\Venta');
+
+        $entityManager->persist($venta);
+        $entityManager->flush();
+
+        //dd($request);
+        return new RedirectResponse($this->admin->generateUrl('list'));
+    }
 }

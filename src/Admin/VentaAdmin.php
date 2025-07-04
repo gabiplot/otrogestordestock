@@ -26,8 +26,8 @@ final class VentaAdmin extends AbstractAdmin
             ->add('cliente')
             ->add('fecha')
             ->add('subtotal')
-            ->add('descuento')
-            ->add('impuestos')
+            //->add('descuento')
+            //->add('impuestos')
             ->add('total')
             ->add('estado')
             ->add('forma_pago')
@@ -42,8 +42,8 @@ final class VentaAdmin extends AbstractAdmin
             ->add('cliente')
             ->add('fecha')
             ->add('subtotal')
-            ->add('descuento')
-            ->add('impuestos')
+            //->add('descuento')
+            //->add('impuestos')
             ->add('total')
             ->add('estado')
             ->add('forma_pago')
@@ -96,16 +96,18 @@ final class VentaAdmin extends AbstractAdmin
                 'currency' => 'ARS',
                 'required' => true
             ])
+            /*
             ->add('descuento', MoneyType::class, [
                 'label' => 'Descuento',
                 'currency' => 'ARS',
                 'required' => true
-            ])
+            ])            
             ->add('impuestos', MoneyType::class, [
                 'label' => 'Impuestos',
                 'currency' => 'ARS',
                 'required' => true
             ])
+            */
             ->add('total', MoneyType::class, [
                 'label' => 'Total',
                 'currency' => 'ARS',
@@ -135,8 +137,8 @@ final class VentaAdmin extends AbstractAdmin
             ->add('cliente')
             ->add('fecha')
             ->add('subtotal')
-            ->add('descuento')
-            ->add('impuestos')
+            //->add('descuento')
+            //->add('impuestos')
             ->add('total')
             ->add('estado')
             ->add('forma_pago')
@@ -161,6 +163,7 @@ final class VentaAdmin extends AbstractAdmin
     {
         $collection->add('detalle_venta', $this->getRouterIdParameter().'/detalleventa/list');
         $collection->add('agregar_producto', $this->getRouterIdParameter().'/detalleventa/agregar_producto');
+        $collection->add('finalizar_venta', $this->getRouterIdParameter().'/detalleventa/finalizar_venta');
     }
 
     public function prePersist(object $object): void
