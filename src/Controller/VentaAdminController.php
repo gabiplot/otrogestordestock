@@ -2,10 +2,15 @@
 namespace App\Controller;
 
 use App\Entity\DetalleVenta;
+use App\Form\VentaAgregarProductoForm;
 use Symfony\Component\HttpFoundation\Request;
-use Sonata\AdminBundle\Controller\CRUDController;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+
+use App\Entity\Producto;
 
 class VentaAdminController extends CRUDController
 {
@@ -24,9 +29,107 @@ class VentaAdminController extends CRUDController
         return parent::redirectTo($request, $object);
     }
 
+    public function agregarProductoAction(request $request): Response   
+    {
+
+        //venta actual;
+        $venta = $this->admin->getSubject();
+
+        $formulario = $request->request->get('venta_agrega_producto_form');
+
+        $form = $this->createForm(VentaAgregarProductoForm::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {            
+
+            /*
+            $token = new CsrfToken('venta_agregar_producto_form', $request->request->get('venta_agregar_producto_form')['_token']);            
+
+            if (!$csrfTokenManager->isTokenValid($token)) {
+                throw new AccessDeniedHttpException('CSRF token inválido.');
+            } 
+            */           
+
+            $form_data = $form->getData();
+
+            $buscar_codigo_producto = strip_tags($form_data['buscar_codigo_producto'],'');
+
+            $cantidad = strip_tags($form_data['cantidad'],'');
+
+            $producto = strip_tags($form_data['producto'],'');
+            
+            $producto_select = $form_data['producto_select'];
+
+            //dump($producto_select instanceof Producto);
+
+            //dd($form->getData());            
+
+            if (!is_numeric($cantidad)){
+                $this->addFlash('sonata_flash_error', 'La cantidad debe ser un numero ! ' );
+                return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
+            }
+
+            if ($buscar_codigo_producto == "true")
+                {
+                    //busca por codigo de producto
+                    $producto = $this->admin
+                                        ->getModelManager()
+                                        ->getEntityManager('App\Entity\Producto')
+                                        ->getRepository('App\Entity\Producto')
+                                        ->findOneBy(['codigo_producto' => $producto]);
+                    if ($producto == null)
+                    {
+                        $this->addFlash('sonata_flash_error', 'No Existe el producto con codigo: ' . $producto );
+                        return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
+                    }                                     
+                } 
+            else 
+                {
+
+                    if (!($producto_select instanceof Producto)) {
+                        $this->addFlash("error", "No selecciono ningun producto !");
+                        return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
+                    } 
+                    
+                    $producto = $producto_select;
+                }
+        
+                    $detalle_venta = new DetalleVenta;                                 
+        
+                    $subtotal = $cantidad * $producto->getPrecioDeVenta();
+            
+                    $detalle_venta->setProducto($producto);
+                    $detalle_venta->setCantidad($cantidad);
+                    $detalle_venta->setPrecioUnitario($producto->getPrecioDeVenta());
+                    $detalle_venta->setDescuentoItem(0.0);
+                    $detalle_venta->setSubtotal($subtotal);
+                    $detalle_venta->setVenta($venta);
+                    
+                    $entityManager =  $this->admin
+                                            ->getModelManager()
+                                            ->getEntityManager('App\Entity\Venta');
+        
+                    $entityManager->persist($detalle_venta);
+        
+                    $entityManager->flush();
+        
+                    return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
+
+        }                                  
+                
+
+        return $this->render('VentaAdmin/agregar_producto.html.twig', [
+            'form' => $form->createView(),
+            'error' => "",
+        ]);
+    }
+
     /**
      * @param $id
      */
+    /*
     public function agregarProductoAction(request $request): RedirectResponse
     {
         //dd($request);
@@ -81,6 +184,7 @@ class VentaAdminController extends CRUDController
         //dd();
 
     }
+    */
     
     public function finalizarVentaAction(request $request): RedirectResponse
     {        

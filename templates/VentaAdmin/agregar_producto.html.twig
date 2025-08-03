@@ -1,0 +1,62 @@
+{% block miblock %}
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="sonata-ba-collapsed-fields">            
+                    <form action="{{ path('admin_app_venta_agregar_producto', {'id': app.request.get('id') }) }}" method="post" role="form">
+                    <div class="form-group">                                            
+                        {{ form_row(form._token) }}
+                        <div class="row">                                           
+                            <div class="col-md-2">
+                            {{ form_widget(form.cantidad, {'attr': {'class': 'form-control'}}) }}                                                                    
+                            </div>
+                            <div class="col-md-2" >
+                                    <div class="col-md-9 col-xs-6" style="padding: 0px;">
+                                        <div id="producto_container" >
+                                        {{ form_widget(form.producto, {'attr': {'class': 'form-control', 'autofocus' : true }}) }}
+                                        </div>
+                                        <div id="producto_select_container" style="display: none;">
+                                        {{ form_widget(form.producto_select, {'attr': {'class': 'form-control', 'autofocus' : true }}) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-6" style="padding: 0px;">
+                                        {{ form_widget(form.buscar_codigo_producto, {'attr': {'class': 'form-control', 'value': 'true'}}) }}
+                                        <button id="buttontoggle" name="buttontoggle" type="button" class="form-control btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                                        <i class="fa fa-search"></i>           
+                                        </button>
+                                    </div>                                                                    
+                            </div>                                                                              
+                            <div class="col-md-1">
+                            <button type="submit" class="btn btn-success btn-block" name="btn_create_and_list"><i class="fa fa-save"></i> Agregar</button>
+                            </div>
+                            <div class="col-md-1">
+                            <a class="btn btn-primary btn-block" href="{{ path('admin_app_venta_edit', {'id': app.request.get('id'),'finalizar': 'finalizar' }) }}"><i class="fa fa-check"></i> Finalizar</a>
+                            </div>                            
+                            <div class="col-md-6">
+                                <input type="text" class="form-control text-right" value="TOTAL: ${{ admin.subject.getSubtotalVenta }}" style="font-size: 1.8rem;font-weight: bold" readonly/>
+                            </div>
+                        </div>                                                
+                    </div>
+                    </form>   
+                </div>
+            </div>         
+        </div>     
+
+
+<script>
+$(document).ready(function() {
+    $('#buttontoggle').on('click', function() {        
+        $attr = $(this).attr('aria-pressed') == "true";
+        $('#venta_agregar_producto_form_buscar_codigo_producto').val($attr);
+        if ($attr) {
+            console.log("press true")
+            $('#producto_select_container').hide();
+            $('#producto_container').show();
+        } else {
+            console.log("press false")
+            $('#producto_select_container').show();
+            $('#producto_container').hide();
+        }
+    });    
+});
+</script>          
+{% endblock %}

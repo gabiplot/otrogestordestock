@@ -53,7 +53,7 @@ services:
     admin.detalle_venta:
         class: App\Admin\DetalleVentaAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\DetalleVenta, controller: App\Controller\DetalleVentaAdminController, manager_type: orm, group: admin, label: DetalleVenta }    
+            - { name: sonata.admin, model_class: App\Entity\DetalleVenta, controller: App\Controller\DetalleVentaAdminController, manager_type: orm, group: admin, label: DetalleVenta, show_mosaic_button: false }    
         calls:
             - [setTemplate, ['list', 'DetalleVentaAdmin/list.html.twig']]
 

@@ -66,7 +66,7 @@ class Venta
 
     public function __toString(): string
     {
-        return strval($this->id);
+        return strval($this->id . "-" .$this->getCliente());
     }    
 
     public function getId(): ?int

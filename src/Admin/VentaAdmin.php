@@ -10,11 +10,15 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
+
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 
-use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
+use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
+use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 
 final class VentaAdmin extends AbstractAdmin
 {    
@@ -63,15 +67,19 @@ final class VentaAdmin extends AbstractAdmin
             // CREATE
             $form
             //->add('id')
-            ->with('Datos del Cliente', ['class' => 'col-md-6'])
+            ->with('Datos del Cliente', ['class' => 'col-md-4'])
             ->add('cliente', ModelAutocompleteType::class, [
                         'property' => ['nombre','cuit'],
                         //'btn_add' => true,
                         'placeholder'=>'Seleccione el cliente',
+                        'minimum_input_length' => 0,
                         //'row_attr'=>['class'=>'col-md-6'],
-                    ])
+                    ])     
+            ->add('estado', HiddenType::class,[
+                'data' => 'INICIADO',
+            ])                       
             ->end()
-            ->with('Fecha', ['class' => 'col-md-6'])
+            ->with('Fecha', ['class' => 'col-md-4'])
             ->add('fecha',null,[
                 'widget'=>'single_text',
                 'data'=>(new \DateTime('now')),
@@ -82,49 +90,97 @@ final class VentaAdmin extends AbstractAdmin
             ;      
         } else if ($this->isCurrentRoute('edit')) {
             // EDIT
+            dump($this->getSubject());
+            dump($this->getSubject()->getSubtotalVenta());
+            $finalizar = $this->getRequest()->get('finalizar');
+
+            if (!empty($finalizar)) {
+                $form->add('estado', HiddenType::class,[
+                    'data' => 'FINALIZAR',
+                ]); 
+                $form->add('total', HiddenType::class,[
+                    'data' => $this->getSubject()->getSubtotalVenta(),
+                ]); 
+            } else {
+                $form->add('estado', HiddenType::class,[
+                    'data' => 'INICIADO',
+                ]); 
+                $form->add('total', HiddenType::class,[
+                    'data' => $this->getSubject()->getSubtotalVenta(),
+                ]); 
+            }
+
             $form
-            //->add('id')
-            ->add('cliente')
+            ->add('cliente',null, [
+                    'row_attr'=>['class'=>'col-md-4'],
+                    'help' => 'El cliente que efectua la compra'
+                    ])
             ->add('fecha',null,[
                 'widget'=>'single_text',
                 //'data'=>(new \DateTime('now')),
-                //'row_attr'=>['class'=>'col-md-2'],
+                'row_attr'=>['class'=>'col-md-4'],
+                'help' => 'Fecha de Hoy'
                 //'required'=>true,
                ])
-            ->add('subtotal', MoneyType::class, [
-                'label' => 'Subtotal',
-                'currency' => 'ARS',
-                'required' => true
-            ])
-            /*
-            ->add('descuento', MoneyType::class, [
-                'label' => 'Descuento',
-                'currency' => 'ARS',
-                'required' => true
-            ])            
-            ->add('impuestos', MoneyType::class, [
-                'label' => 'Impuestos',
-                'currency' => 'ARS',
-                'required' => true
-            ])
-            */
-            ->add('total', MoneyType::class, [
+            ->add('e',null, [
+                'disabled' => true,
+                'mapped' => false,
+                'label' => 'Estado',
+                'data' => $this->getSubject()->getEstado(),
+                'row_attr'=>['class'=>'col-md-4'],
+                'help' => 'Estado de la Compra'
+            ])    
+            ->add('forma_pago',ChoiceFieldMaskType::class, [
+                'choices' => [
+                    'EFECTIVO' => 'EFECTIVO',
+                    'CTA CTE' => 'CTA CTE',
+                ],
+                'map' => [
+                    'EFECTIVO' => ['importe', 'cambio'],
+                    'CTA CTE' => [''],
+                ],
+                'placeholder' => 'Seleccione el metodo de pago',
+                'help' => 'El metodo de pago',
+                'required' => false,
+                'row_attr'=>['class'=>'col-md-3']
+            ])                    
+            ->add('t', null, [
                 'label' => 'Total',
-                'currency' => 'ARS',
-                'required' => true
+                //'readonly' => true,
+                'disabled' => true,
+                'mapped' => false,
+               //'currency' => 'ARS',
+                'data' => $this->getSubject()->getSubtotalVenta(),    
+                'row_attr'=>['class'=>'col-md-3', ],
+                'help' => 'Total a pagar por el cliente'
             ])
-            ->add('estado')
-            ->add('forma_pago')
-            ->add('observacion')
+            ->add('importe',null, [
+                'mapped' => false,
+                'help' => 'Importe abonado por el cliente',
+                //'currency' => 'ARS',
+                'row_attr'=>['class'=>'col-md-3']
+            ])
+            ->add('cambio',null, [
+                'help' => 'El cambio que recibira el cliente',
+                'mapped' => false,
+                'disabled' => true,
+                //'currency' => 'ARS',
+                'row_attr'=>['class'=>'col-md-3']
+            ])            
+            ->add('observacion',null, [
+                'row_attr'=>['class'=>'col-md-12']
+            ])
             ;            
         } else {
             //ESTO ES NECESARIO PARA EL AUTOCOMPLETE
             $form
             ->add('cliente', ModelAutocompleteType::class, [
                 'property' => ['nombre','cuit'],
-                'btn_add' => false,
-                'placeholder'=>'Seleccione el cliente'
-            ])
+                //'btn_add' => true,
+                'placeholder'=>'Seleccione el cliente',
+                'minimum_input_length' => 0,
+                //'row_attr'=>['class'=>'col-md-6'],
+            ])  
             ;
         }
 
@@ -150,6 +206,13 @@ final class VentaAdmin extends AbstractAdmin
      * FUNCIONES PROPIAS 
      */
     //ORDENAR POR DEFECTO
+    public function preValidate(object $object): void
+    {
+        //dump($object);
+        //dd();
+    }
+
+
 	protected function configureDefaultSortValues(array &$sortValues): void
 	{
         
@@ -168,11 +231,11 @@ final class VentaAdmin extends AbstractAdmin
 
     public function prePersist(object $object): void
     {
+        //dd($object);
         $object->setSubTotal('0.00');
         $object->setDescuento('0.00');
         $object->setImpuestos('0.00');
         $object->setTotal('0.00');
-        $object->setEstado('ESTADO');
         $object->setFormaPago('FORMA PAGO');
 
         //dd($object->getId());
@@ -193,6 +256,7 @@ final class VentaAdmin extends AbstractAdmin
         );
     }
 
+    /*
     protected function redirectTo(object $object): string
     {
         //dd("redirect");
@@ -208,7 +272,7 @@ final class VentaAdmin extends AbstractAdmin
         return parent::redirectTo($object);
         
     }
-
+    */
 
     protected function configureTabMenu(MenuItemInterface $menu, string $action, AdminInterface $childAdmin = null): void
     {
@@ -222,11 +286,11 @@ final class VentaAdmin extends AbstractAdmin
         
         $id = $admin->getRequest()->get('id');
         
-        if ($this->isGranted('EDIT')) {
-            $menu->addChild('Editar Venta', $admin->generateMenuUrl('edit', ['id' => $id]));
-        }
+        //if ($this->isGranted('EDIT')) {
+            //$menu->addChild('Editar Venta', $admin->generateMenuUrl('edit', ['id' => $id]));
+        //}
 
-        $menu->addChild('Ver Venta', $admin->generateMenuUrl('show', ['id' => $id]));
+        //$menu->addChild('Ver Venta', $admin->generateMenuUrl('show', ['id' => $id]));
         
         if ($this->isGranted('LIST')) {
             //if ($this->getSubject()->getEstado()){

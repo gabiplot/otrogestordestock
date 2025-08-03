@@ -66,6 +66,18 @@ class DetalleVenta
         return $this;
     }
 
+    public function getProductoSelect(): ?Producto
+    {
+        return $this->producto;
+    }
+
+    public function setProductoSelect(?Producto $producto): static
+    {
+        $this->producto = $producto;
+
+        return $this;
+    }    
+
     public function getCantidad(): ?int
     {
         return $this->cantidad;

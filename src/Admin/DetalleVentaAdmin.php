@@ -56,12 +56,12 @@ final class DetalleVentaAdmin extends AbstractAdmin
             ->add('producto')
             ->add('cantidad')
             ->add('precio_unitario')
-            ->add('descuento_item')
+            //->add('descuento_item')
             ->add('subtotal')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
-                    'show' => [],
-                    'edit' => [],
+                    //'show' => [],
+                    //'edit' => [],
                     'delete' => [],
                 ],
             ]);
@@ -108,7 +108,7 @@ final class DetalleVentaAdmin extends AbstractAdmin
 
     /*
     * funciones particulares 
-    */    
+    */ 
 
 	protected function configureDefaultSortValues(array &$sortValues): void
 	{
