@@ -49,6 +49,7 @@ services:
             - { name: sonata.admin, model_class: App\Entity\Venta, controller: App\Controller\VentaAdminController, manager_type: orm, group: admin, label: Venta }
         calls:
             - [addChild, ['@admin.detalle_venta', 'venta']]
+            - [setTemplate, ['edit', 'VentaAdmin/edit.html.twig']]            
 
     admin.detalle_venta:
         class: App\Admin\DetalleVentaAdmin

@@ -1,0 +1,58 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% set m_ruta = admin.request.attributes.get('_route') %}
+{% set m_btn_create_and_list = true %}
+{% set m_btn_update_and_list = true %}
+{% set m_btn_create_and_create = true %}
+{% set m_btn_update_and_edit = true %}
+
+{% if (m_ruta ends with '_create') %}
+    {% set m_btn_create_and_list = false %}
+    {% set m_btn_create_and_create = false %}
+{% elseif (m_ruta ends with '_edit') %}
+    {% set m_btn_update_and_list = false %}
+    {% if app.session.flashbag.has('sonata_flash_success') %}        
+        {% set m_btn_update_and_edit = false %}
+    {% endif %}    
+    {% set m_btn_delete = false %}
+{% elseif (m_ruta ends with '_finalizar') %}
+    {% set m_btn_update_and_list = false %}
+{% endif %}
+
+{% block btn_create_and_list %}
+{% if m_btn_create_and_list %}{{ parent() }}{% endif %}
+{% endblock %}    
+
+{% block btn_update_and_list %}
+{% if m_btn_update_and_list %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% block btn_create_and_create %}
+{% if m_btn_create_and_create %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% block btn_update_and_edit %}
+    {% if m_btn_update_and_edit %}
+        {{ parent() }} 
+    {% else %}
+        <a class="btn btn-success" href="{{ path('admin_app_venta_list') }}">
+        <i class="fas fa-check" aria-hidden="true"></i> Ir a Listado</a>
+        <a class="btn btn-primary" href="{{ path('admin_app_venta_create') }}">
+        <i class="fas fa-check" aria-hidden="true"></i> Nueva Venta</a>        
+    {% endif %}
+{% endblock %}
+
+{% block btn_delete %}
+{% if m_btn_delete %}{{ parent() }}{% endif %}
+{% endblock %}

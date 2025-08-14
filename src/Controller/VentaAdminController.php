@@ -29,6 +29,27 @@ class VentaAdminController extends CRUDController
         return parent::redirectTo($request, $object);
     }
 
+    public function finalizarAction($id): Response
+    {
+        $venta = $this->admin->getSubject();
+        
+        $subtotal = $venta->getSubtotalVenta();
+
+        $venta->setEstado('FINALIZAR');
+        $venta->setTotal($subtotal);
+
+        $entityManager =  $this->admin
+                               ->getModelManager()
+                               ->getEntityManager('App\Entity\Venta');
+
+        $entityManager->persist($venta);
+
+        $entityManager->flush();
+
+        return new RedirectResponse($this->admin->generateUrl('edit', ['id' => $venta->getId()]));
+        //dd($venta);
+    }
+
     public function agregarProductoAction(request $request): Response   
     {
 

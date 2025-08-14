@@ -8,6 +8,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 #[ORM\Entity(repositoryClass: VentaRepository::class)]
 class Venta
 {
@@ -36,8 +39,8 @@ class Venta
 
     #[ORM\Column(length: 255)]
     private ?string $estado = null;
-
-    #[ORM\Column(length: 255)]
+    
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $forma_pago = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -57,11 +60,38 @@ class Venta
      */
     #[ORM\OneToMany(targetEntity: CuentaCorrienteCliente::class, mappedBy: 'venta')]
     private Collection $cuentaCorrienteClientes;
+  
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]     
+    private ?string $importe = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $cambio = null;
 
     public function __construct()
     {
         $this->detalleVentas = new ArrayCollection();
         $this->cuentaCorrienteClientes = new ArrayCollection();
+    }
+
+    #[Assert\Callback]
+    public function validarImporteMenorOIgualTotal(ExecutionContextInterface $context): void
+    {
+        if ($this->importe !== null && $this->total !== null && $this->importe < $this->total) {
+            $context->buildViolation('El importe no puede ser menor que el total.')
+                ->atPath('importe') // Marca el campo "importe"
+                ->addViolation();
+        }
+    }
+
+    #[Assert\Callback]
+    public function validarFormaPago(ExecutionContextInterface $context): void
+    {
+        //dd($this);
+        if ($this->forma_pago === null or $this->forma_pago === '') {
+            $context->buildViolation('La forma de pago no debe ser vacia. !')
+                ->atPath('forma_pago') // Marca el campo "importe"
+                ->addViolation();
+        }
     }
 
     public function __toString(): string
@@ -163,7 +193,7 @@ class Venta
         return $this->forma_pago;
     }
 
-    public function setFormaPago(string $forma_pago): static
+    public function setFormaPago(?string $forma_pago): static
     {
         $this->forma_pago = $forma_pago;
 
@@ -234,6 +264,18 @@ class Venta
         return sprintf("%.2f", $subtotal );
     }
 
+    public function getCambioTotal(): string
+    {
+
+        $cambio = 0.0;
+
+        $cambio = floatval($this->getImporte()) - floatval($this->getTotal());
+        
+        //dd(sprintf("%.2f", $cambio ));
+
+        return sprintf("%.2f", $cambio );
+    }    
+
     /**
      * @return Collection<int, CuentaCorrienteCliente>
      */
@@ -260,6 +302,31 @@ class Venta
                 $cuentaCorrienteCliente->setVenta(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImporte(): ?string
+    {
+        return $this->importe;
+    }
+
+    public function setImporte(string $importe): static
+    {
+
+        $this->importe = $importe;
+
+        return $this;
+    }
+
+    public function getCambio(): ?string
+    {
+        return $this->cambio;
+    }
+
+    public function setCambio(string $cambio): static
+    {
+        $this->cambio = $cambio;
 
         return $this;
     }

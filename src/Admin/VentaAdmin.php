@@ -9,16 +9,21 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Validator\ErrorElement;
+
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
-
 use Knp\Menu\ItemInterface as MenuItemInterface;
-use Sonata\AdminBundle\Route\RouteCollectionInterface;
-
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
+use Sonata\AdminBundle\Route\RouteCollectionInterface;
+
 use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
+//use Sonata\Form\Validator\ErrorElement;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 final class VentaAdmin extends AbstractAdmin
 {    
@@ -42,39 +47,58 @@ final class VentaAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('id')
-            ->add('cliente')
-            ->add('fecha')
-            ->add('subtotal')
+            //->add('id')
+            ->add('cliente',null,['header_class' =>'col-md-3 text-center'])
+            ->add('fecha',null,['format' => 'd-m-Y', 'header_class' =>'col-md-1 text-center'])
+            //->add('subtotal')
             //->add('descuento')
-            //->add('impuestos')
-            ->add('total')
-            ->add('estado')
-            ->add('forma_pago')
-            ->add('observacion')
+            //->add('impuestos')            
+            ->add('estado',null, ['header_class' =>'col-md-2 text-center'])
+            ->add('forma_pago',null, ['header_class' =>'col-md-2 text-center'])
+            ->add('total',null, ['header_class' =>'col-md-2 text-center', 'row_align'=>'right'])
+            //->add('observacion')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],
                     //'edit' => [],
                     'delete' => [],
                 ],
+                ['header_class' =>'col-md-2 text-center']
             ]);
     }
 
     protected function configureFormFields(FormMapper $form): void
     {
+        //dd($this->getSubject());
+
         if ($this->isCurrentRoute('create')) {
             // CREATE
+            $cliente = $this->getCliente(1);
+
+            //dd($cliente);
+            //dd();
+            $this->getSubject()->setCliente($cliente);
+
             $form
             //->add('id')
             ->with('Datos del Cliente', ['class' => 'col-md-4'])
             ->add('cliente', ModelAutocompleteType::class, [
                         'property' => ['nombre','cuit'],
                         //'btn_add' => true,
+                        // 'data' => $cliente,
                         'placeholder'=>'Seleccione el cliente',
                         'minimum_input_length' => 0,
                         //'row_attr'=>['class'=>'col-md-6'],
-                    ])     
+                    ])   
+            ->add('forma_pago', HiddenType::class,[
+                'data' => 'FP PENDIENTE',
+            ])
+            ->add('sub_total',HiddenType::class,['data' => '0.00'])
+            ->add('descuento',HiddenType::class,['data' => '0.00'])
+            ->add('impuestos',HiddenType::class,['data' => '0.00'])
+            ->add('total',HiddenType::class,['data' => '0.00'])
+            ->add('importe',HiddenType::class,['data' => '0.00'])
+            ->add('cambio',HiddenType::class,['data' => '0.00'])           
             ->add('estado', HiddenType::class,[
                 'data' => 'INICIADO',
             ])                       
@@ -83,32 +107,24 @@ final class VentaAdmin extends AbstractAdmin
             ->add('fecha',null,[
                 'widget'=>'single_text',
                 'data'=>(new \DateTime('now')),
-                //'row_attr'=>['class'=>'col-md-2'],
-                //'required'=>true,
             ])
             ->end()
             ;      
         } else if ($this->isCurrentRoute('edit')) {
-            // EDIT
-            dump($this->getSubject());
-            dump($this->getSubject()->getSubtotalVenta());
-            $finalizar = $this->getRequest()->get('finalizar');
 
-            if (!empty($finalizar)) {
+            if ($this->getSubject()->getEstado() == 'FINALIZAR'){
                 $form->add('estado', HiddenType::class,[
-                    'data' => 'FINALIZAR',
-                ]); 
-                $form->add('total', HiddenType::class,[
-                    'data' => $this->getSubject()->getSubtotalVenta(),
+                    'data' => 'FINALIZADO',
                 ]); 
             } else {
                 $form->add('estado', HiddenType::class,[
-                    'data' => 'INICIADO',
-                ]); 
-                $form->add('total', HiddenType::class,[
-                    'data' => $this->getSubject()->getSubtotalVenta(),
-                ]); 
+                    'data' => $this->getSubject()->getEstado(),
+                ]);                
             }
+
+            $form->add('total', HiddenType::class,[
+                'data' => $this->getSubject()->getTotal(),
+            ]);
 
             $form
             ->add('cliente',null, [
@@ -117,10 +133,8 @@ final class VentaAdmin extends AbstractAdmin
                     ])
             ->add('fecha',null,[
                 'widget'=>'single_text',
-                //'data'=>(new \DateTime('now')),
                 'row_attr'=>['class'=>'col-md-4'],
                 'help' => 'Fecha de Hoy'
-                //'required'=>true,
                ])
             ->add('e',null, [
                 'disabled' => true,
@@ -141,30 +155,25 @@ final class VentaAdmin extends AbstractAdmin
                 ],
                 'placeholder' => 'Seleccione el metodo de pago',
                 'help' => 'El metodo de pago',
-                'required' => false,
+                'required' => true,
                 'row_attr'=>['class'=>'col-md-3']
             ])                    
             ->add('t', null, [
                 'label' => 'Total',
-                //'readonly' => true,
                 'disabled' => true,
                 'mapped' => false,
-               //'currency' => 'ARS',
                 'data' => $this->getSubject()->getSubtotalVenta(),    
                 'row_attr'=>['class'=>'col-md-3', ],
                 'help' => 'Total a pagar por el cliente'
             ])
-            ->add('importe',null, [
-                'mapped' => false,
+            ->add('importe',TextType::class, [
                 'help' => 'Importe abonado por el cliente',
-                //'currency' => 'ARS',
-                'row_attr'=>['class'=>'col-md-3']
+                'attr' => ['autofocus'=>'true'],
+                'row_attr'=>['class'=>'col-md-3', 'autofocus'=>'true'],
             ])
-            ->add('cambio',null, [
+            ->add('cambio',TextType::class, [
                 'help' => 'El cambio que recibira el cliente',
-                'mapped' => false,
                 'disabled' => true,
-                //'currency' => 'ARS',
                 'row_attr'=>['class'=>'col-md-3']
             ])            
             ->add('observacion',null, [
@@ -176,10 +185,8 @@ final class VentaAdmin extends AbstractAdmin
             $form
             ->add('cliente', ModelAutocompleteType::class, [
                 'property' => ['nombre','cuit'],
-                //'btn_add' => true,
                 'placeholder'=>'Seleccione el cliente',
                 'minimum_input_length' => 0,
-                //'row_attr'=>['class'=>'col-md-6'],
             ])  
             ;
         }
@@ -192,9 +199,7 @@ final class VentaAdmin extends AbstractAdmin
             ->add('id')
             ->add('cliente')
             ->add('fecha')
-            ->add('subtotal')
-            //->add('descuento')
-            //->add('impuestos')
+            ->add('subtotal')   
             ->add('total')
             ->add('estado')
             ->add('forma_pago')
@@ -205,13 +210,22 @@ final class VentaAdmin extends AbstractAdmin
     /*
      * FUNCIONES PROPIAS 
      */
-    //ORDENAR POR DEFECTO
+	public function getCliente($id)
+	{ 	 
+
+    	$ea = $this->getModelManager()
+               	->getEntityManager('App\Entity\Cliente')
+               	->getRepository('App\Entity\Cliente')
+               	->find($id)
+                ; 	 
+
+    	return $ea;
+	}
+    
     public function preValidate(object $object): void
     {
-        //dump($object);
-        //dd();
+        $object->setCambio($object->getCambioTotal());
     }
-
 
 	protected function configureDefaultSortValues(array &$sortValues): void
 	{
@@ -226,53 +240,8 @@ final class VentaAdmin extends AbstractAdmin
     {
         $collection->add('detalle_venta', $this->getRouterIdParameter().'/detalleventa/list');
         $collection->add('agregar_producto', $this->getRouterIdParameter().'/detalleventa/agregar_producto');
-        $collection->add('finalizar_venta', $this->getRouterIdParameter().'/detalleventa/finalizar_venta');
+        $collection->add('finalizar', $this->getRouterIdParameter().'/finalizar');
     }
-
-    public function prePersist(object $object): void
-    {
-        //dd($object);
-        $object->setSubTotal('0.00');
-        $object->setDescuento('0.00');
-        $object->setImpuestos('0.00');
-        $object->setTotal('0.00');
-        $object->setFormaPago('FORMA PAGO');
-
-        //dd($object->getId());
-
-        //dd($this->generateUrl('detalle_venta', ['id' => $object->getId()]));
-    }
-
-    protected function postPersist(object $object): void
-    {
-        parent::postPersist($object);
-        
-        //dd($this->generateUrl('detalle_venta', ['id' => $object->getId()]));
-
-        // Redireccionar a la página de detalle después de crear
-        $this->getRequest()->getSession()->set(
-            'sonata_admin_redirect_url',
-            $this->generateUrl('detalle_venta', ['id' => $object->getId()])
-        );
-    }
-
-    /*
-    protected function redirectTo(object $object): string
-    {
-        //dd("redirect");
-        
-        $request = $this->getRequest();
-        
-        // Si viene de crear o editar, redirigir a detalle
-        if ($request->get('btn_create_and_edit') || $request->get('btn_update_and_edit')) {
-            return 'detalle_venta';
-        }
-        
-        // Mantener comportamiento por defecto para otros casos
-        return parent::redirectTo($object);
-        
-    }
-    */
 
     protected function configureTabMenu(MenuItemInterface $menu, string $action, AdminInterface $childAdmin = null): void
     {
@@ -285,17 +254,10 @@ final class VentaAdmin extends AbstractAdmin
         $admin = $this->isChild() ? $this->getParent() : $this;
         
         $id = $admin->getRequest()->get('id');
-        
-        //if ($this->isGranted('EDIT')) {
-            //$menu->addChild('Editar Venta', $admin->generateMenuUrl('edit', ['id' => $id]));
-        //}
-
-        //$menu->addChild('Ver Venta', $admin->generateMenuUrl('show', ['id' => $id]));
+    
         
         if ($this->isGranted('LIST')) {
-            //if ($this->getSubject()->getEstado()){
-                $menu->addChild('Detalle Venta', $admin->generateMenuUrl('admin.detalle_venta.list', ['id' => $id]));
-            //}        
+            $menu->addChild('Detalle Venta', $admin->generateMenuUrl('admin.detalle_venta.list', ['id' => $id]));
         }
         
     }
