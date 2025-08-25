@@ -89,10 +89,12 @@ final class VentaAdmin extends AbstractAdmin
                         'placeholder'=>'Seleccione el cliente',
                         'minimum_input_length' => 0,
                         //'row_attr'=>['class'=>'col-md-6'],
-                    ])   
+                    ])  
+            /* 
             ->add('forma_pago', HiddenType::class,[
-                'data' => 'FP PENDIENTE',
+                'data' => '',
             ])
+            */
             ->add('sub_total',HiddenType::class,['data' => '0.00'])
             ->add('descuento',HiddenType::class,['data' => '0.00'])
             ->add('impuestos',HiddenType::class,['data' => '0.00'])
@@ -111,8 +113,7 @@ final class VentaAdmin extends AbstractAdmin
             ->end()
             ;      
         } else if ($this->isCurrentRoute('edit')) {
-
-            if ($this->getSubject()->getEstado() == 'FINALIZAR'){
+            if ($this->getSubject()->getEstado() == 'PENDIENTE'){
                 $form->add('estado', HiddenType::class,[
                     'data' => 'FINALIZADO',
                 ]); 
@@ -265,7 +266,7 @@ final class VentaAdmin extends AbstractAdmin
 	public function configureBatchActions($actions): array
 	{
     	if (isset($actions['delete'])) {
-        	unset($actions['delete']);
+        	//unset($actions['delete']);
     	}
 
     	return $actions;

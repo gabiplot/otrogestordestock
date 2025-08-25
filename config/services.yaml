@@ -36,7 +36,7 @@ services:
     admin.proveedor:
         class: App\Admin\ProveedorAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Proveedor, controller: ~, manager_type: orm, group: admin, label: Proveedor }
+            - { name: sonata.admin, model_class: App\Entity\Proveedor, controller: ~, manager_type: orm, group: admin, label: Proveedor, show_in_dashboard: false }
 
     admin.producto:
         class: App\Admin\ProductoAdmin
@@ -61,39 +61,39 @@ services:
     admin.cobro_cliente:
         class: App\Admin\CobroClienteAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\CobroCliente, controller: ~, manager_type: orm, group: admin, label: CobroCliente }
+            - { name: sonata.admin, model_class: App\Entity\CobroCliente, controller: ~, manager_type: orm, group: admin, label: CobroCliente, show_in_dashboard: false }
 
     admin.cuenta_corriente_cliente:
         class: App\Admin\CuentaCorrienteClienteAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteCliente, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteCliente }
+            - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteCliente, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteCliente, show_in_dashboard: false }
 
     admin.caja:
         class: App\Admin\CajaAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Caja, controller: ~, manager_type: orm, group: admin, label: Caja }
+            - { name: sonata.admin, model_class: App\Entity\Caja, controller: ~, manager_type: orm, group: admin, label: Caja, show_in_dashboard: false }
 
     admin.compra:
         class: App\Admin\CompraAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Compra, controller: ~, manager_type: orm, group: admin, label: Compra }
+            - { name: sonata.admin, model_class: App\Entity\Compra, controller: ~, manager_type: orm, group: admin, label: Compra, show_in_dashboard: false }
 
     admin.detalle_compra:
         class: App\Admin\DetalleCompraAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\DetalleCompra, controller: ~, manager_type: orm, group: admin, label: DetalleCompra }
+            - { name: sonata.admin, model_class: App\Entity\DetalleCompra, controller: ~, manager_type: orm, group: admin, label: DetalleCompra, show_in_dashboard: false }
 
     admin.pago_proveedor:
         class: App\Admin\PagoProveedorAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\PagoProveedor, controller: ~, manager_type: orm, group: admin, label: PagoProveedor }
+            - { name: sonata.admin, model_class: App\Entity\PagoProveedor, controller: ~, manager_type: orm, group: admin, label: PagoProveedor, show_in_dashboard: false }
 
     admin.cuenta_corriente_proveedor:
         class: App\Admin\CuentaCorrienteProveedorAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteProveedor, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteProveedor }
+            - { name: sonata.admin, model_class: App\Entity\CuentaCorrienteProveedor, controller: ~, manager_type: orm, group: admin, label: CuentaCorrienteProveedor,show_in_dashboard: false }
 
     admin.movimiento_stock:
         class: App\Admin\MovimientoStockAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\MovimientoStock, controller: ~, manager_type: orm, group: admin, label: MovimientoStock }
+            - { name: sonata.admin, model_class: App\Entity\MovimientoStock, controller: ~, manager_type: orm, group: admin, label: MovimientoStock,show_in_dashboard: false }

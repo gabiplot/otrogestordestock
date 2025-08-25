@@ -35,9 +35,8 @@ class VentaAdminController extends CRUDController
         
         $subtotal = $venta->getSubtotalVenta();
 
-        $venta->setEstado('FINALIZAR');
-        $venta->setTotal($subtotal);
-
+        $venta->setEstado('PENDIENTE');
+        $venta->setTotal($subtotal);        
         $entityManager =  $this->admin
                                ->getModelManager()
                                ->getEntityManager('App\Entity\Venta');
@@ -49,7 +48,7 @@ class VentaAdminController extends CRUDController
         return new RedirectResponse($this->admin->generateUrl('edit', ['id' => $venta->getId()]));
         //dd($venta);
     }
-
+    
     public function agregarProductoAction(request $request): Response   
     {
 
@@ -63,15 +62,7 @@ class VentaAdminController extends CRUDController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) 
-        {            
-
-            /*
-            $token = new CsrfToken('venta_agregar_producto_form', $request->request->get('venta_agregar_producto_form')['_token']);            
-
-            if (!$csrfTokenManager->isTokenValid($token)) {
-                throw new AccessDeniedHttpException('CSRF token inválido.');
-            } 
-            */           
+        {                      
 
             $form_data = $form->getData();
 
@@ -81,11 +72,7 @@ class VentaAdminController extends CRUDController
 
             $producto = strip_tags($form_data['producto'],'');
             
-            $producto_select = $form_data['producto_select'];
-
-            //dump($producto_select instanceof Producto);
-
-            //dd($form->getData());            
+            $producto_select = $form_data['producto_select'];         
 
             if (!is_numeric($cantidad)){
                 $this->addFlash('sonata_flash_error', 'La cantidad debe ser un numero ! ' );
@@ -145,83 +132,13 @@ class VentaAdminController extends CRUDController
             'form' => $form->createView(),
             'error' => "",
         ]);
-    }
-
-    /**
-     * @param $id
-     */
-    /*
-    public function agregarProductoAction(request $request): RedirectResponse
-    {
-        //dd($request);
-
-        $venta = $this->admin->getSubject();
-
-        $cod_prod = strip_tags($request->get('cod_prod',''));
-
-        $cant_prod = strip_tags($request->get('cant_prod',''));
-
-        $producto = $this->admin
-                         ->getModelManager()
-                         ->getEntityManager('App\Entity\Producto')
-                         ->getRepository('App\Entity\Producto')
-                         ->findOneBy(['codigo_producto' => $cod_prod]);
-
-
-        //dd($detalle_venta);
-
-        if ($producto == null){
-            $this->addFlash('sonata_flash_error', 'No Existe el producto con codigo: ' . $cod_prod );
-            return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
-        } else {
-            //$this->addFlash('sonata_flash_success', 'Producto existente');
-
-            //dd($producto);
-
-            $detalle_venta = new DetalleVenta;                                 
-
-            $subtotal = $cant_prod * $producto->getPrecioDeVenta();
-    
-            $detalle_venta->setProducto($producto);
-            $detalle_venta->setCantidad($cant_prod);
-            $detalle_venta->setPrecioUnitario($producto->getPrecioDeVenta());
-            $detalle_venta->setDescuentoItem(0.0);
-            $detalle_venta->setSubtotal($subtotal);
-            $detalle_venta->setVenta($venta);
-            //$venta->addDetalleVenta($detalle_venta);
-            
-            $entityManager =  $this->admin
-                                   ->getModelManager()
-                                   ->getEntityManager('App\Entity\Venta');
-
-            $entityManager->persist($detalle_venta);
-
-            $entityManager->flush();
-
-            return new RedirectResponse($this->admin->generateUrl('detalle_venta', ['id' => $venta->getId()]));
-        }
-
-        
-        //dd();
-
-    }
-    */
+    }    
     
     public function finalizarVentaAction(request $request): RedirectResponse
     {        
         $venta = $this->admin->getSubject();
         $detalle_ventas = $venta->getDetalleVentas();
 
-        //dump($venta);
-
-        //dump($venta->getSubtotalVenta());
-
-        /*
-        foreach($detalle_ventas as $detalle_venta)
-        {
-            dump($detalle_venta);
-        }
-        */
         $venta->setSubTotal($venta->getSubtotalVenta());
         $venta->setFormaPago("EFECTIVO");
         $venta->setTotal($venta->getSubtotalVenta());

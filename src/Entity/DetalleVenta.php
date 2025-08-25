@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DetalleVentaRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class DetalleVenta
 {
     #[ORM\Id]
@@ -30,7 +31,42 @@ class DetalleVenta
     private ?string $descuento_item = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $subtotal = null;
+    private ?string $subtotal = null;  
+
+    #[ORM\PrePersist]
+    public function onPrePresist(): void
+    {
+        //dd("dv_prepersist");//$this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PostPersist]
+    public function onPostPresist(): void
+    {
+        if ($this->venta) 
+        {
+            //dd($this->venta->getSubtotalVenta());
+            $this->venta->setTotal($this->venta->getSubtotalVenta());
+            dump($this->venta);
+            //dd($this->venta);//$this->createdAt = new \DateTimeImmutable();
+        }
+       
+    }
+
+    #[ORM\PostUpdate]
+    public function onPostUpdate(): void
+    {
+        if ($this->venta) 
+        {
+            $this->venta->setTotal($this->venta->getSubtotalVenta());
+            //dd($this->venta);//$this->createdAt = new \DateTimeImmutable();
+        }       
+    }      
+    
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        //dd("dv_preupdate");//$this->createdAt = new \DateTimeImmutable();
+    }        
 
     public function getId(): ?int
     {

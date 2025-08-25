@@ -41,7 +41,7 @@ final class ClienteAdmin extends AbstractAdmin
             ->add('email')
             ->add('tipo_cliente')
             //->add('fecha_registro')
-            ->add('activo')
+            //->add('activo')
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'show' => [],

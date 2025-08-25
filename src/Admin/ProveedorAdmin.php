@@ -13,6 +13,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 final class ProveedorAdmin extends AbstractAdmin
 {
     //remove batch delete
+    /*
     public function configureBatchActions($actions): array
 	{
     	if (isset($actions['delete'])) {
@@ -21,6 +22,7 @@ final class ProveedorAdmin extends AbstractAdmin
 
     	return $actions;
 	}
+    */
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {

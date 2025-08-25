@@ -52,7 +52,7 @@ class Venta
     /**
      * @var Collection<int, DetalleVenta>
      */
-    #[ORM\OneToMany(targetEntity: DetalleVenta::class, mappedBy: 'venta')]
+    #[ORM\OneToMany(targetEntity: DetalleVenta::class, mappedBy: 'venta', cascade:['remove'])]
     private Collection $detalleVentas;
 
     /**
@@ -83,6 +83,7 @@ class Venta
         }
     }
 
+    /*
     #[Assert\Callback]
     public function validarFormaPago(ExecutionContextInterface $context): void
     {
@@ -93,6 +94,7 @@ class Venta
                 ->addViolation();
         }
     }
+    */
 
     public function __toString(): string
     {
