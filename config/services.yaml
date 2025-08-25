@@ -97,3 +97,8 @@ services:
         class: App\Admin\MovimientoStockAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\MovimientoStock, controller: ~, manager_type: orm, group: admin, label: MovimientoStock,show_in_dashboard: false }
+
+    admin.movimiento:
+        class: App\Admin\MovimientoAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Movimiento, controller: ~, manager_type: orm, group: admin, label: Movimiento }

@@ -65,6 +65,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: MovimientoStock::class, mappedBy: 'usuario')]
     private Collection $movimientoStocks;
 
+    /**
+     * @var Collection<int, Movimiento>
+     */
+    #[ORM\OneToMany(targetEntity: Movimiento::class, mappedBy: 'usuario')]
+    private Collection $movimientos;
+
     public function __construct()
     {
         $this->movimientoStocks = new ArrayCollection();
@@ -73,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->cajas = new ArrayCollection();
         $this->pagoProveedors = new ArrayCollection();
         $this->compras = new ArrayCollection();
+        $this->movimientos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -320,6 +327,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($movimientoStock->getUsuario() === $this) {
                 $movimientoStock->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Movimiento>
+     */
+    public function getMovimientos(): Collection
+    {
+        return $this->movimientos;
+    }
+
+    public function addMovimiento(Movimiento $movimiento): static
+    {
+        if (!$this->movimientos->contains($movimiento)) {
+            $this->movimientos->add($movimiento);
+            $movimiento->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimiento(Movimiento $movimiento): static
+    {
+        if ($this->movimientos->removeElement($movimiento)) {
+            // set the owning side to null (unless already changed)
+            if ($movimiento->getUsuario() === $this) {
+                $movimiento->setUsuario(null);
             }
         }
 

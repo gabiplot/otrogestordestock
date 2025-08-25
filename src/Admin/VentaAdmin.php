@@ -25,6 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
+use App\Entity\Movimiento;
+
 final class VentaAdmin extends AbstractAdmin
 {    
 
@@ -227,6 +229,53 @@ final class VentaAdmin extends AbstractAdmin
     {
         $object->setCambio($object->getCambioTotal());
     }
+
+    public function preUpdate(object $object): void
+    {
+        if ($object->getEstado() == 'FINALIZAR')
+        {
+            
+            //si existe movimiento en detalle actualizarlo
+            //sino crearlo
+        }
+    }
+
+    public function postUpdate(object $object): void
+    {
+        if ($object->getEstado() == 'FINALIZADO')
+        {
+            $em = $this->getModelManager()
+                       ->getEntityManager('App\Entity\Movimiento');
+            $movimiento = $em->getRepository('App\Entity\Movimiento')
+                             ->findOneBy(['venta' => $object->getId()]);  
+
+            //dd($movimiento);
+
+            if ($movimiento) {
+                $movimiento->setEntrada($object->getTotal());
+                $movimiento->setSalida('0.00');
+                $movimiento->setMotivo('VENTA');
+                $movimiento->setTipo('ENTRADA');
+                $movimiento->setFecha($object->getFecha());
+                $em->persist($movimiento);
+                $em->flush();
+                //editar uno
+            } else {
+                $movimiento = new Movimiento;
+                $movimiento->setEntrada($object->getTotal());
+                $movimiento->setSalida('0.00');
+                $movimiento->setMotivo('VENTA');
+                $movimiento->setTipo('ENTRADA');
+                $movimiento->setFecha($object->getFecha());
+                $em->persist($movimiento);
+                $em->flush();                
+                //crear uno
+            }
+
+            //si existe movimiento en detalle actualizarlo
+            //sino crearlo
+        }
+    }    
 
 	protected function configureDefaultSortValues(array &$sortValues): void
 	{

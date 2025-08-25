@@ -67,10 +67,17 @@ class Venta
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $cambio = null;
 
+    /**
+     * @var Collection<int, Movimiento>
+     */
+    #[ORM\OneToMany(targetEntity: Movimiento::class, mappedBy: 'venta', cascade:['remove'])]
+    private Collection $movimientos;
+
     public function __construct()
     {
         $this->detalleVentas = new ArrayCollection();
         $this->cuentaCorrienteClientes = new ArrayCollection();
+        $this->movimientos = new ArrayCollection();
     }
 
     #[Assert\Callback]
@@ -329,6 +336,36 @@ class Venta
     public function setCambio(string $cambio): static
     {
         $this->cambio = $cambio;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Movimiento>
+     */
+    public function getMovimientos(): Collection
+    {
+        return $this->movimientos;
+    }
+
+    public function addMovimiento(Movimiento $movimiento): static
+    {
+        if (!$this->movimientos->contains($movimiento)) {
+            $this->movimientos->add($movimiento);
+            $movimiento->setVenta($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimiento(Movimiento $movimiento): static
+    {
+        if ($this->movimientos->removeElement($movimiento)) {
+            // set the owning side to null (unless already changed)
+            if ($movimiento->getVenta() === $this) {
+                $movimiento->setVenta(null);
+            }
+        }
 
         return $this;
     }
