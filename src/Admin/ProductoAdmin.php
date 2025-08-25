@@ -10,25 +10,20 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Sonata\AdminBundle\Filter\Model\FilterData;
+use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQueryInterface;
 
 final class ProductoAdmin extends AbstractAdmin
 {
-
-    //remove batch delete
-    public function configureBatchActions($actions): array
-	{
-    	if (isset($actions['delete'])) {
-        	unset($actions['delete']);
-    	}
-
-    	return $actions;
-	}
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
@@ -36,30 +31,108 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('id')
             ->add('codigo_producto')
             ->add('nombre')
-            ->add('precio_de_costo')
-            ->add('precio_de_venta')
-            ->add('unidad_de_medida')
-            ->add('stock_minimo')
-            ->add('activo')
+            //->add('precio_de_costo')
+            //->add('precio_de_venta')            
+            //->add('stock_actual')
+            //->add('stock_minimo')
+            //->add('unidad_de_medida')
+            //->add('activo')
+            ->add('stock', CallbackFilter::class, [
+                'label' => 'Consultar Stock',
+                //callback' => static function ($queryBuilder, $alias, $field, $value) {
+                //    dd($value);
+
+                //if (!$value || !isset($value['value'])) {
+                //        return false;
+                //    }
+                'callback' => static function(ProxyQueryInterface $query, string $alias, string $field, FilterData $data): bool {
+                    
+                    if (!$data->hasValue()) {
+                        return false;
+                    }
+
+                    //dd($data->getValue());
+                    
+                    switch ($data->getValue()) {
+                        case 'menor': 
+                            //dd($alias);                       
+                            //$queryBuilder->andWhere($alias . '.stock_actual < ' . $alias . '.stock_minimo');
+                            $query->andWhere($alias . '.stock_actual < ' . $alias . '.stock_minimo');
+                            //dd($alias);
+                            break;
+                        case 'igual':
+                            $query->andWhere($alias . '.stock_actual = ' . $alias . '.stock_minimo');
+                            break;
+                        case 'mayor':
+                            $query->andWhere($alias . '.stock_actual > ' . $alias . '.stock_minimo');
+                            break;
+                        case 'critico':
+                            // Stock actual es 0 o menor que la mitad del mínimo                            
+                            $query->andWhere(
+                                $query->expr()->orX(
+                                    $alias . '.stock_actual = 0',
+                                    $alias . '.stock_actual < (' . $alias . '.stock_minimo / 2)'
+                                )
+                            );                            
+                            break;
+                        default:
+                            return false;
+                    }                    
+                    return true;
+                },
+                'field_type' => ChoiceType::class,
+                'placeholder' => 'Seleccionar comparación',
+                'field_options' => [
+                    'choices' => [
+                        'Stock menor que mínimo' => 'menor',
+                        'Stock igual que mínimo' => 'igual',
+                        'Stock mayor que mínimo' => 'mayor',
+                        'Stock crítico' => 'critico',
+                    ],
+                    'required' => false,
+                    'placeholder' => 'Seleccionar comparación',
+                ],
+            ])
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('id')
-            ->add('codigo_producto')
-            ->add('nombre')
-            ->add('precio_de_costo')
-            ->add('precio_de_venta')
-            ->add('unidad_de_medida')
-            ->add('stock_minimo')
-            ->add('activo')
+            //->add('id')
+            ->add('codigo_producto',null, [
+                            'header_class' =>'col-md-1 text-center',
+        	                'row_align'=>'center']
+                            )
+            ->add('nombre',null, [
+                'header_class' =>'col-md-1 text-center',
+                'row_align'=>'center']
+                )
+            //->add('precio_de_costo')
+            ->add('precio_de_venta',null, [
+                'header_class' =>'col-md-1 text-center',
+                'row_align'=>'right']
+                )
+            ->add('stock_actual',null, [
+                'header_class' =>'col-md-1 text-center',
+                'row_align'=>'right']
+                )
+            //->add('stock_minimo',null, [
+            //    'header_class' =>'col-md-1 text-center',
+            //    'row_align'=>'right']
+            //    )
+            //->add('unidad_de_medida')
+            //->add('activo',null, [
+            //    'header_class' =>'col-md-1 text-center',
+            //    'row_align'=>'center']
+            //    )
             ->add(ListMapper::NAME_ACTIONS, null, [
+                'header_class' =>'col-md-1 text-center',
+                'row_align'=>'center',
                 'actions' => [
                     'show' => [],
-                    'edit' => [],
-                    'delete' => [],
+                    //'edit' => [],
+                    //'delete' => [],
                 ],
             ]);
     }
@@ -136,4 +209,16 @@ final class ProductoAdmin extends AbstractAdmin
             ->add('stock_minimo')            
         ;
     }
+
+    //FUNCIONES PARTICULARES
+    
+    public function configureBatchActions($actions): array
+	{
+    	if (isset($actions['delete'])) {
+        	unset($actions['delete']);
+    	}
+
+    	return $actions;
+	}
+
 }

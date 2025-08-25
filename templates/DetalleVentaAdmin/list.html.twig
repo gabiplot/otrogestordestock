@@ -17,7 +17,10 @@ file that was distributed with this source code.
 {% extends '@SonataAdmin/CRUD/base_list.html.twig' %}
 
 {% block navbar_title %}
-    {{admin.parent.subject}}
+    {#{ dump(admin.isChild )}#}
+    {% if admin.isChild %}
+        {{admin.parent.subject}}
+    {% endif %}
 {% endblock %}
 
 {% block actions %}    
@@ -34,7 +37,9 @@ file that was distributed with this source code.
 {% endblock %}
 
 {% block sonata_admin_content %}
- {{ block('custom') }}
+ {% if admin.isChild %}
+    {{ block('custom') }}
+ {% endif %}
  {{ parent() }}     
      {#% if app.request.get('filter')['detalle_debe'] is defined  %#}
         {#{ dump(app.request.get('filter')['detalle_debe']['value']) }#}     

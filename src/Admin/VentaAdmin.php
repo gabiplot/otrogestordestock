@@ -25,6 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
+use App\Entity\Movimiento;
+
 final class VentaAdmin extends AbstractAdmin
 {    
 
@@ -89,10 +91,12 @@ final class VentaAdmin extends AbstractAdmin
                         'placeholder'=>'Seleccione el cliente',
                         'minimum_input_length' => 0,
                         //'row_attr'=>['class'=>'col-md-6'],
-                    ])   
+                    ])  
+            /* 
             ->add('forma_pago', HiddenType::class,[
-                'data' => 'FP PENDIENTE',
+                'data' => '',
             ])
+            */
             ->add('sub_total',HiddenType::class,['data' => '0.00'])
             ->add('descuento',HiddenType::class,['data' => '0.00'])
             ->add('impuestos',HiddenType::class,['data' => '0.00'])
@@ -111,8 +115,7 @@ final class VentaAdmin extends AbstractAdmin
             ->end()
             ;      
         } else if ($this->isCurrentRoute('edit')) {
-
-            if ($this->getSubject()->getEstado() == 'FINALIZAR'){
+            if ($this->getSubject()->getEstado() == 'PENDIENTE'){
                 $form->add('estado', HiddenType::class,[
                     'data' => 'FINALIZADO',
                 ]); 
@@ -227,6 +230,53 @@ final class VentaAdmin extends AbstractAdmin
         $object->setCambio($object->getCambioTotal());
     }
 
+    public function preUpdate(object $object): void
+    {
+        if ($object->getEstado() == 'FINALIZAR')
+        {
+            
+            //si existe movimiento en detalle actualizarlo
+            //sino crearlo
+        }
+    }
+
+    public function postUpdate(object $object): void
+    {
+        if ($object->getEstado() == 'FINALIZADO')
+        {
+            $em = $this->getModelManager()
+                       ->getEntityManager('App\Entity\Movimiento');
+            $movimiento = $em->getRepository('App\Entity\Movimiento')
+                             ->findOneBy(['venta' => $object->getId()]);  
+
+            //dd($movimiento);
+
+            if ($movimiento) {
+                $movimiento->setEntrada($object->getTotal());
+                $movimiento->setSalida('0.00');
+                $movimiento->setMotivo('VENTA');
+                $movimiento->setTipo('ENTRADA');
+                $movimiento->setFecha($object->getFecha());
+                $em->persist($movimiento);
+                $em->flush();
+                //editar uno
+            } else {
+                $movimiento = new Movimiento;
+                $movimiento->setEntrada($object->getTotal());
+                $movimiento->setSalida('0.00');
+                $movimiento->setMotivo('VENTA');
+                $movimiento->setTipo('ENTRADA');
+                $movimiento->setFecha($object->getFecha());
+                $em->persist($movimiento);
+                $em->flush();                
+                //crear uno
+            }
+
+            //si existe movimiento en detalle actualizarlo
+            //sino crearlo
+        }
+    }    
+
 	protected function configureDefaultSortValues(array &$sortValues): void
 	{
         
@@ -265,7 +315,7 @@ final class VentaAdmin extends AbstractAdmin
 	public function configureBatchActions($actions): array
 	{
     	if (isset($actions['delete'])) {
-        	unset($actions['delete']);
+        	//unset($actions['delete']);
     	}
 
     	return $actions;

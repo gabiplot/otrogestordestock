@@ -78,6 +78,20 @@ final class UserAdmin extends AbstractAdmin
         ;
     }
 
+    /*
+    * FUNCIONES PARTICULARES
+    */
+
+	public function configureBatchActions($actions): array
+	{
+    	if (isset($actions['delete'])) {
+        	unset($actions['delete']);
+    	}
+
+    	return $actions;
+	}
+
+
     public function prePersist($user): void
     {
         $this->handlePassword($user);

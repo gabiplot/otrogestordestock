@@ -43,7 +43,11 @@ security:
                ROLE_ADMIN_CUENTA_CORRIENTE_PROVEEDOR_ALL,
 
                #-- CAJA --
-               ROLE_ADMIN_CAJA_ALL
+               ROLE_ADMIN_CAJA_ALL,
+                
+               #-- MOVIMIENTO --
+               ROLE_ADMIN_MOVIMIENTO_ALL, 
+
                ]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 

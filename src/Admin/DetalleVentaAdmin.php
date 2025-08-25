@@ -61,7 +61,7 @@ final class DetalleVentaAdmin extends AbstractAdmin
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     //'show' => [],
-                    //'edit' => [],
+                    'edit' => [],
                     'delete' => [],
                 ],
             ]);
@@ -121,7 +121,7 @@ final class DetalleVentaAdmin extends AbstractAdmin
 	public function configureBatchActions($actions): array
 	{
     	if (isset($actions['delete'])) {
-        	unset($actions['delete']);
+        	//unset($actions['delete']);
     	}
 
     	return $actions;
